@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails du Produit</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <style>
+        .price-card {
+            transition: transform 0.2s;
+        }
+        .price-card:hover {
+            transform: translateY(-5px);
+        }
+        .stats-card {
+            background: linear-gradient(135deg, #6B73FF 0%, #000DFF 100%);
+            color: white;
+        }
+        .product-image {
+            max-height: 300px;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <!-- En-tête du produit -->
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <img src="{{ productInfo.image_url }}" alt="{{ productInfo.product_name }}" class="img-fluid rounded shadow product-image">
+            </div>
+            <div class="col-md-8">
+                <h1 class="display-4 mb-3">{{ productInfo.product_name }}</h1>
+                <p class="lead">Code produit: {{ productCode }}</p>
+                <p class="text-muted">
+                    Quantité: {{ productInfo.product_quantity }} {{ productInfo.product_quantity_unit }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Statistiques -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card stats-card shadow">
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-md-3">
+                                <h3>{{ "%.2f"|format(stats.min) }}€</h3>
+                                <p class="mb-0">Prix minimum</p>
+                            </div>
+                            <div class="col-md-3">
+                                <h3>{{ "%.2f"|format(stats.max) }}€</h3>
+                                <p class="mb-0">Prix maximum</p>
+                            </div>
+                            <div class="col-md-3">
+                                <h3>{{ "%.2f"|format(stats.avg) }}€</h3>
+                                <p class="mb-0">Prix moyen</p>
+                            </div>
+                            <div class="col-md-3">
+                                <h3>{{ stats.count }}</h3>
+                                <p class="mb-0">Relevés de prix</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Liste des prix -->
+        <div class="row">
+            {% for price in prices %}
+            <div class="col-md-4 mb-4">
+                <div class="card price-card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ price.store }}</h5>
+                        <h2 class="text-primary mb-3">{{ "%.2f"|format(price.price) }}€</h2>
+                        <p class="card-text">
+                            <i class="bi bi-geo-alt"></i> {{ price.location }}<br>
+                            <i class="bi bi-calendar"></i> {{ price.date }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Bouton retour -->
+        <div class="text-center mt-4">
+            <a href="{{ url_for('index') }}" class="btn btn-primary">
+                <i class="bi bi-arrow-left"></i> Retour à la recherche
+            </a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html> 

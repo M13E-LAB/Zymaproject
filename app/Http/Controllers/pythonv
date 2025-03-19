@@ -1,0 +1,110 @@
+from flask import Flask, render_template, request, redirect, url_for, flash
+import requests
+
+app = Flask(__name__)
+app.secret_key = 'votre_cle_secrete'  # Nécessaire pour utiliser flash()
+
+# URLs des APIs OpenFoodFacts
+PRICE_API_URL = 'https://prices.openfoodfacts.org/api/v1/prices'
+PRODUCT_API_URL = 'https://world.openfoodfacts.org/api/v0/product/'
+
+@app.route('/')
+def index():
+    """ Affiche le formulaire de recherche """
+    return render_template('products/search.html')
+
+@app.route('/fetch', methods=['POST'])
+def fetch():
+    """ Récupère les informations du produit et ses prix """
+    product_code = request.form.get('product_code')
+
+    if not product_code:
+        flash("Le code produit est requis.", "error")
+        return redirect(url_for('index'))
+
+    try:
+        # Requête API pour les prix
+        price_response = requests.get(PRICE_API_URL, params={'product_code': product_code}, verify=False)
+        # Requête API pour les infos du produit
+        product_response = requests.get(f"{PRODUCT_API_URL}{product_code}.json", verify=False)
+
+        if price_response.ok and product_response.ok:
+            price_data = price_response.json()
+            product_data = product_response.json()
+
+            # Traitement des données
+            prices = process_prices(price_data.get('items', []))
+            stats = calculate_stats(prices)
+            product_info = get_product_info(product_data)
+
+            return render_template('products/show.html', prices=prices, productCode=product_code, stats=stats, productInfo=product_info)
+        else:
+            flash("Échec de la récupération des données produit.", "error")
+            return redirect(url_for('index'))
+
+    except Exception as e:
+        flash(f"Une erreur s'est produite : {str(e)}", "error")
+        return redirect(url_for('index'))
+
+def process_prices(items):
+    """ Transforme et trie les données de prix """
+    processed = []
+    for item in items:
+        location_info = item.get('location', {})
+        store = location_info.get('osm_name', 'Unknown')
+        price = item.get('price')
+        date = item.get('date')
+        city = location_info.get('osm_address_city', '')
+        country = location_info.get('osm_address_country', '')
+        location = f"{city}, {country}" if city or country else "Unknown"
+
+        processed.append({
+            'store': store,
+            'price': price,
+            'date': date,
+            'location': location
+        })
+
+    return sorted(processed, key=lambda x: x['date'], reverse=True)
+
+def calculate_stats(prices):
+    """ Calcule min, max, moyenne et nombre de prix """
+    if not prices:
+        return {'min': 0, 'max': 0, 'avg': 0, 'count': 0}
+
+    price_values = [p['price'] for p in prices if p['price'] is not None]
+    if not price_values:
+        return {'min': 0, 'max': 0, 'avg': 0, 'count': 0}
+
+    return {
+        'min': min(price_values),
+        'max': max(price_values),
+        'avg': sum(price_values) / len(price_values),
+        'count': len(price_values)
+    }
+
+def get_product_info(data):
+    """ Extrait les infos du produit """
+    product = data.get('product', {})
+    return {
+        'product_name': product.get('product_name', 'Unknown Product'),
+        'image_url': product.get('image_front_url', product.get('image_url', 'https://via.placeholder.com/400x400')),
+        'product_quantity': product.get('quantity', 'Unknown'),
+        'product_quantity_unit': product.get('quantity_unit', '')
+    }
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+from flask import Flask, render_template
+import os
+
+app = Flask(__name__, template_folder="/Users/mae/Downloads/zymaProject/templates")
+
+@app.route('/')
+def index():
+    return render_template('products/search.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)
+ 
