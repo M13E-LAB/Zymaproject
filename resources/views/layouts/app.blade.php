@@ -80,6 +80,59 @@
             color: var(--accent-primary);
             margin-right: 0.5rem;
         }
+        
+        .avatar-small {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-primary);
+        }
+        
+        .dropdown-menu {
+            background-color: var(--bg-secondary);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .dropdown-item {
+            color: var(--text-primary);
+            padding: 0.8rem 1.5rem;
+            transition: all 0.2s ease;
+        }
+        
+        .dropdown-item:hover {
+            background-color: var(--bg-tertiary);
+            color: var(--accent-primary);
+        }
+        
+        .dropdown-divider {
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .btn-outline-light {
+            border-color: rgba(255, 255, 255, 0.2);
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-outline-light:hover {
+            background-color: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: var(--bg-primary);
+        }
+        
+        .user-points {
+            background-color: var(--accent-primary);
+            color: var(--bg-primary);
+            font-weight: bold;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            margin-left: 8px;
+        }
 
         .card {
             background: var(--card-bg);
@@ -237,6 +290,30 @@
             min-height: calc(100vh - 80px);
             padding: 2rem 0;
         }
+        
+        .progress-bar {
+            background: var(--accent-gradient);
+        }
+        
+        .badge-item {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: var(--card-bg);
+            font-size: 2rem;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-secondary);
+        }
+        
+        .badge-item.earned {
+            background: var(--accent-gradient);
+            color: var(--bg-primary);
+            box-shadow: 0 0 20px rgba(0, 209, 178, 0.3);
+        }
     </style>
 </head>
 <body>
@@ -250,8 +327,47 @@
                 <a href="{{ route('statistics') }}" class="nav-link">
                     <i class="fas fa-chart-bar"></i> Statistiques
                 </a>
+                <a href="#" class="nav-link">
+                    <i class="fas fa-stream"></i> Feed Social
+                </a>
             </div>
-            <div class="nav-spacer"></div>
+            
+            <div class="d-flex align-items-center">
+                @if(auth()->check())
+                    <div class="dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            @if(auth()->user()->avatar)
+                                <img src="{{ auth()->user()->avatar }}" alt="Avatar" class="avatar-small me-2">
+                            @else
+                                <i class="fas fa-user-circle me-2" style="font-size: 1.5rem;"></i>
+                            @endif
+                            {{ auth()->user()->name }}
+                            <span class="user-points">{{ auth()->user()->points ?? 0 }}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li><a class="dropdown-item" href="{{ route('profile.show') }}"><i class="fas fa-user-circle me-2"></i> Mon profil</a></li>
+                            <li><a class="dropdown-item" href="{{ route('profile.posts') }}"><i class="fas fa-share-alt me-2"></i> Mes partages</a></li>
+                            <li><a class="dropdown-item" href="{{ route('profile.points') }}"><i class="fas fa-star me-2"></i> Mes points</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form action="{{ route('logout') }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        <i class="fas fa-sign-out-alt me-2"></i> Déconnexion
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                @else
+                    <a href="{{ route('login') }}" class="btn btn-outline-light btn-sm me-2">
+                        <i class="fas fa-sign-in-alt me-1"></i> Connexion
+                    </a>
+                    <a href="{{ route('register') }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-user-plus me-1"></i> Inscription
+                    </a>
+                @endif
+            </div>
         </div>
     </nav>
 
