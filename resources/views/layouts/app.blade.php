@@ -327,7 +327,7 @@
                 <a href="{{ route('statistics') }}" class="nav-link">
                     <i class="fas fa-chart-bar"></i> Statistiques
                 </a>
-                <a href="#" class="nav-link">
+                <a href="{{ route('social.feed') }}" class="nav-link">
                     <i class="fas fa-stream"></i> Feed Social
                 </a>
             </div>
