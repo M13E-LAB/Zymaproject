@@ -22,13 +22,10 @@ class User extends Authenticatable
         'email',
         'password',
         'username',
-        'avatar',
-        'location',
-        'favorite_stores',
-        'preferences',
         'bio',
-        'level',
+        'avatar',
         'points',
+        'preferences',
     ];
 
     /**
@@ -49,8 +46,6 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'location' => 'array',
-        'favorite_stores' => 'array',
         'preferences' => 'array',
     ];
 
@@ -81,7 +76,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the user's point transactions.
+     * Get the point transactions for the user.
      */
     public function pointTransactions()
     {
@@ -166,26 +161,29 @@ class User extends Authenticatable
      */
     public function awardPoints($points, $actionType, $description = null, $metadata = null)
     {
-        // Update user's total points
-        $this->increment('points', $points);
-
-        // Create a point transaction record
-        return $this->pointTransactions()->create([
+        // Créer la transaction de points
+        $transaction = $this->pointTransactions()->create([
             'action_type' => $actionType,
             'points' => $points,
             'description' => $description,
             'metadata' => $metadata,
         ]);
+        
+        // Mettre à jour le total de points de l'utilisateur
+        $this->increment('points', $points);
+        
+        return $transaction;
     }
 
     /**
-     * Check if the user has a specific badge.
+     * Check if user has a specific badge.
      *
-     * @param string $badgeSlug
+     * @param string $badgeCode
      * @return bool
      */
-    public function hasBadge($badgeSlug)
+    public function hasBadge($badgeCode)
     {
-        return $this->badges()->where('slug', $badgeSlug)->exists();
+        // Cette méthode sera implémentée plus tard avec un système de badges
+        return false;
     }
 }

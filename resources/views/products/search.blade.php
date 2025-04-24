@@ -1,433 +1,760 @@
 @extends('layouts.app')
 
 @section('content')
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<div class="zyma-container">
+    <!-- Navigation avec barre de recherche intégrée -->
+    <nav class="zyma-nav">
+        <div class="logo-container">
+            <h1 class="zyma-logo">ZYMA</h1>
+            <div class="tagline">manger bien, payer moins</div>
+        </div>
+        <div class="nav-links">
+            <a href="{{ route('products.search') }}" class="nav-link">Découvrir</a>
+            <a href="{{ route('statistics') }}" class="nav-link">Statistiques</a>
+            <a href="{{ route('social.feed') }}" class="nav-link">Communauté</a>
+            @if(auth()->check())
+                <a href="{{ route('profile.show') }}" class="nav-link">Mon Profil</a>
+            @else
+                <a href="{{ route('login') }}" class="btn-connexion">Connexion</a>
+            @endif
+        </div>
+    </nav>
 
-<div class="hero-section">
-    <div class="container">
-        <div class="row align-items-center min-vh-100">
-            <div class="col-lg-6 hero-text">
-                <div class="logo-container mb-4">
-                    <h1 class="zyma-logo">ZYMA</h1>
-                    <div class="etchelast-tag">powered by etchelast</div>
+    <!-- Section héro avec scanner et comparateur -->
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1 class="hero-title">Mangez mieux.<br>Dépensez moins.</h1>
+            <p class="hero-subtitle">
+                L'application qui compare les prix des produits alimentaires<br>
+                et vous propose des alternatives plus saines et économiques.
+            </p>
+            
+            <div class="search-container">
+                <div class="search-tabs">
+                    <button class="search-tab active" data-tab="barcode">
+                        <i class="fas fa-barcode"></i> Code-barres
+                    </button>
+                    <button class="search-tab" data-tab="camera">
+                        <i class="fas fa-camera"></i> Photo
+                    </button>
                 </div>
-                <h2 class="tagline mb-4">
-                    THE APP THAT HELPS YOU EAT WELL<br>
-                    WITHOUT BREAKING THE BANK
-                </h2>
-                <p class="rational-quote">" stay rational. "</p>
-                <div class="search-box">
-                    <form action="{{ route('products.fetch') }}" method="POST" class="mb-4">
+                
+                <div class="search-box" id="barcode-search">
+                    <form action="{{ route('products.fetch') }}" method="POST">
                         @csrf
                         <div class="input-group">
-                            <span class="input-group-text">
+                            <div class="input-icon">
                                 <i class="fas fa-barcode"></i>
-                            </span>
-                            <input type="text" name="product_code" class="form-control form-control-lg search-input" 
+                            </div>
+                            <input type="text" name="product_code" class="search-input" 
                                    placeholder="Scannez ou entrez un code-barres..." required>
-                            <button type="submit" class="btn btn-primary btn-lg">
-                                <i class="fas fa-search me-2"></i>Comparer
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-search"></i> Comparer
                             </button>
                         </div>
                     </form>
                 </div>
+                
+                <div class="search-box hidden" id="camera-search">
+                    <div class="camera-preview">
+                        <video id="camera-preview" autoplay playsinline class="hidden"></video>
+                        <div id="camera-placeholder">
+                            <i class="fas fa-camera-retro"></i>
+                            <p>Prenez une photo de votre produit</p>
+                        </div>
+                        <canvas id="photo-canvas" class="hidden"></canvas>
+                        <img id="captured-image" class="img-fluid hidden" alt="Captured image">
+                    </div>
+                    <div class="camera-controls">
+                        <button id="start-camera" class="btn-outline">
+                            <i class="fas fa-camera"></i> Activer l'appareil photo
+                        </button>
+                        <button id="capture-photo" class="btn-primary hidden">
+                            <i class="fas fa-camera"></i> Prendre une photo
+                        </button>
+                        <button id="retake-photo" class="btn-outline hidden">
+                            <i class="fas fa-redo"></i> Reprendre
+                        </button>
+                        <button id="upload-photo" class="btn-primary hidden">
+                            <i class="fas fa-upload"></i> Analyser ce produit
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="col-lg-6 hero-image">
-                <div class="npc-character">
-                    <svg width="300" height="300" viewBox="0 0 300 300">
-                        <circle cx="150" cy="150" r="150" fill="#432C55"/>
-                        <circle cx="150" cy="150" r="148" fill="#2B1B3B"/>
-                        <circle cx="150" cy="150" r="140" fill="#FF69B4"/>
-                        <!-- Simplified NPC face -->
-                        <path d="M100,120 Q150,140 200,120" stroke="#FFFFFF" stroke-width="3" fill="none"/>
-                        <circle cx="130" cy="100" r="8" fill="#FFFFFF"/>
-                        <circle cx="170" cy="100" r="8" fill="#FFFFFF"/>
-                    </svg>
+            
+            <div class="recent-uploads">
+                <h4 class="upload-title">Photos récentes de la communauté</h4>
+                <div class="recent-photos">
+                    <div class="recent-photo-item">
+                        <div class="photo-time">il y a 5 min</div>
+                    </div>
+                    <div class="recent-photo-item">
+                        <div class="photo-time">il y a 12 min</div>
+                    </div>
+                    <div class="recent-photo-item">
+                        <div class="photo-time">il y a 23 min</div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
-<div class="features-section py-5">
-    <div class="container">
-        <div class="row g-4">
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-tag"></i>
-                    </div>
-                    <h3>Prix en Temps Réel</h3>
-                    <p>Accédez aux prix actualisés de plus de 85 000 produits dans toute la France.</p>
-                </div>
+        
+        <!-- Animations et éléments graphiques -->
+        <div class="background-graphics">
+            <div class="food-icon fruit" style="top: 15%; left: 10%;">
+                <i class="fas fa-apple-alt"></i>
             </div>
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-map-marker-alt"></i>
-                    </div>
-                    <h3>Comparaison Locale</h3>
-                    <p>Trouvez les meilleurs prix dans les magasins près de chez vous.</p>
-                </div>
+            <div class="food-icon vegetable" style="top: 70%; left: 15%;">
+                <i class="fas fa-carrot"></i>
             </div>
-            <div class="col-md-4">
-                <div class="feature-card">
-                    <div class="feature-icon">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3>Historique des Prix</h3>
-                    <p>Suivez l'évolution des prix et choisissez le meilleur moment pour acheter.</p>
-                </div>
+            <div class="food-icon grain" style="top: 30%; right: 12%;">
+                <i class="fas fa-bread-slice"></i>
+            </div>
+            <div class="food-icon protein" style="top: 60%; right: 8%;">
+                <i class="fas fa-egg"></i>
+            </div>
+            <div class="food-icon dairy" style="top: 40%; left: 85%;">
+                <i class="fas fa-cheese"></i>
+            </div>
+            <div class="price-bubble small" style="top: 25%; right: 25%;">
+                <span>-30%</span>
+            </div>
+            <div class="price-bubble medium" style="top: 65%; left: 25%;">
+                <span>-15%</span>
+            </div>
+            <div class="price-bubble large" style="top: 50%; right: 30%;">
+                <span>-50%</span>
             </div>
         </div>
     </div>
 </div>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-
+/* Variables et resets */
 :root {
-    --bg-primary: #000000;
-    --bg-secondary: #121212;
-    --bg-tertiary: #1E1E1E;
-    --accent-primary: #00D1B2;
-    --accent-gradient: linear-gradient(45deg, #00D1B2, #00F2C3);
-    --accent-secondary: #666666;
-    --text-primary: #FFFFFF;
-    --text-secondary: #A0A0A0;
+    --bg-dark: #111111;
+    --bg-card: #1a1a1a;
+    --bg-light: #222222;
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --text-muted: rgba(255, 255, 255, 0.5);
+    --accent-primary: #E67E22;
+    --accent-secondary: #4CAF50;
+    --accent-tertiary: #3498db;
+    --gradient-primary: linear-gradient(135deg, #E67E22, #F39C12);
+    --gradient-secondary: linear-gradient(135deg, #4CAF50, #8BC34A);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.1);
+    --shadow-strong: 0 15px 35px rgba(0, 0, 0, 0.2);
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --font-sans: 'Inter', sans-serif;
 }
 
-.hero-section {
-    background-color: var(--bg-primary);
-    position: relative;
-    overflow: hidden;
-    min-height: 100vh;
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-sans);
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+/* Container principal */
+.zyma-container {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
-.hero-section::before {
-    content: '';
-    position: absolute;
+/* Navigation */
+.zyma-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    bottom: 0;
-    background: radial-gradient(circle at 50% 50%, rgba(0, 209, 178, 0.1) 0%, rgba(0, 0, 0, 0) 50%);
-    pointer-events: none;
+    z-index: 1000;
+    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.7);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .logo-container {
-    position: relative;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    padding: 2rem;
-    margin-bottom: 1rem;
+    align-items: flex-start;
 }
 
 .zyma-logo {
-    font-family: 'Inter', sans-serif;
-    font-size: 7rem;
     font-weight: 800;
-    text-align: center;
+    font-size: 2.2rem;
     margin: 0;
-    position: relative;
-    z-index: 2;
-    letter-spacing: -3px;
-    text-transform: uppercase;
-    color: var(--text-primary);
-    text-shadow: 0 0 30px rgba(0, 209, 178, 0.3);
-}
-
-.etchelast-tag {
-    font-family: 'Inter', sans-serif;
-    font-size: 1rem;
-    font-weight: 400;
-    color: var(--accent-secondary);
-    opacity: 0.8;
-    letter-spacing: 2px;
-    margin-top: 0.5rem;
-}
-
-.rational-quote {
-    font-family: 'Inter', sans-serif;
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--text-secondary);
-    text-align: center;
-    margin: 2rem 0;
-    font-style: italic;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -1px;
 }
 
 .tagline {
-    font-family: 'Inter', sans-serif;
-    font-size: 2.2rem;
-    color: var(--text-primary);
-    text-align: center;
-    font-weight: 700;
-    line-height: 1.4;
-    margin-bottom: 2rem;
-    background: var(--accent-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: -0.3rem;
+    letter-spacing: 0.05rem;
+    font-weight: 400;
 }
 
-.search-box {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(10px);
-    padding: 2rem;
-    border-radius: 24px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.nav-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: var(--transition-smooth);
+}
+
+.nav-link:hover {
+    color: var(--text-primary);
+}
+
+.btn-connexion {
+    background-color: rgba(230, 126, 34, 0.15);
+    color: var(--accent-primary);
+    border: 1px solid rgba(230, 126, 34, 0.3);
+    padding: 0.6rem 1.2rem;
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.btn-connexion:hover {
+    background-color: rgba(230, 126, 34, 0.25);
+    transform: translateY(-2px);
+}
+
+/* Section héro */
+.hero-section {
+    padding-top: 5rem;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    background-color: var(--bg-dark);
+}
+
+.hero-content {
+    text-align: center;
+    z-index: 10;
     max-width: 800px;
     margin: 0 auto;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 2rem;
 }
 
-.input-group-text {
+.hero-title {
+    font-size: 4.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    line-height: 1.1;
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: fadeInUp 1s ease-out;
+}
+
+.hero-subtitle {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    margin-bottom: 3rem;
+    line-height: 1.6;
+    animation: fadeInUp 1s ease-out 0.2s both;
+}
+
+.search-container {
+    background: rgba(40, 40, 40, 0.7);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: var(--shadow-strong);
+    backdrop-filter: blur(20px);
+    animation: fadeInUp 1s ease-out 0.4s both;
+}
+
+.search-tabs {
+    display: flex;
+    margin-bottom: 1.5rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-md);
+    padding: 0.3rem;
+}
+
+.search-tab {
+    flex: 1;
     background: transparent;
     border: none;
+    color: var(--text-secondary);
+    padding: 0.8rem;
+    cursor: pointer;
+    border-radius: calc(var(--radius-md) - 4px);
+    transition: var(--transition-smooth);
+    font-weight: 600;
+}
+
+.search-tab.active {
+    background: rgba(230, 126, 34, 0.2);
     color: var(--accent-primary);
 }
 
+.search-tab:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+}
+
+.search-box {
+    transition: var(--transition-smooth);
+}
+
+.hidden {
+    display: none !important;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    padding: 0.3rem;
+}
+
+.input-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 1rem;
+    color: var(--accent-primary);
+    font-size: 1.2rem;
+}
+
 .search-input {
-    background: rgba(255, 255, 255, 0.05) !important;
-    border: none !important;
-    color: var(--text-primary) !important;
-    padding: 1.5rem 1rem;
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-primary);
+    padding: 1rem 0.5rem;
     font-size: 1.1rem;
-    border-radius: 12px !important;
+    outline: none;
 }
 
 .search-input::placeholder {
-    color: var(--text-secondary);
+    color: var(--text-muted);
 }
 
 .btn-primary {
-    background: var(--accent-gradient);
+    background: var(--gradient-primary);
+    color: white;
     border: none;
-    color: var(--bg-primary);
-    font-weight: 700;
-    padding: 1rem 2rem;
-    border-radius: 12px;
-    font-size: 1.1rem;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
 }
 
 .btn-primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 10px 20px rgba(0, 209, 178, 0.2);
-    opacity: 0.9;
+    box-shadow: 0 5px 15px rgba(230, 126, 34, 0.3);
 }
 
-.contact-info {
-    color: #FFFFFF;
-    font-weight: 500;
-    letter-spacing: 1px;
-}
-
-.hero-image img {
-    max-width: 100%;
-    height: auto;
-}
-
-.features-section {
-    background-color: var(--bg-secondary);
-    padding: 5rem 0;
-}
-
-.feature-card {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(10px);
-    padding: 2.5rem;
-    border-radius: 24px;
-    text-align: center;
-    transition: all 0.3s ease;
-    height: 100%;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+.btn-outline {
+    background: transparent;
     color: var(--text-primary);
-}
-
-.feature-card:hover {
-    transform: translateY(-10px);
-    background: rgba(255, 255, 255, 0.05);
-    border-color: var(--accent-primary);
-}
-
-.feature-icon {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 1.5rem;
-    background: var(--accent-gradient);
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transform: rotate(10deg);
-}
-
-.feature-icon i {
-    font-size: 2rem;
-    color: var(--bg-primary);
-    transform: rotate(-10deg);
-}
-
-.npc-character {
-    position: relative;
-    width: 300px;
-    height: 300px;
-    margin: 0 auto;
-    animation: float 6s ease-in-out infinite;
-}
-
-.npc-character svg {
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
-}
-
-/* Responsive adjustments */
-@media (max-width: 991.98px) {
-    .hero-section {
-        padding: 3rem 0;
-    }
-    .tagline {
-        font-size: 1.5rem;
-    }
-    .hero-image {
-        margin-top: 3rem;
-    }
-}
-
-.question-mark-placeholder {
-    position: relative;
-    width: 100%;
-    height: 400px;
-    background: #151515;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-.search-illustration {
-    position: relative;
-    width: 200px;
-    height: 200px;
-}
-
-.search-circle {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 120px;
-    height: 120px;
-    background: #FFFFFF;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.search-circle i {
-    font-size: 3rem;
-    color: #0A0A0A;
-}
-
-.price-tag {
-    position: absolute;
-    top: 20%;
-    right: 0;
-    background: #E0E0E0;
-    padding: 15px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    animation: float 3s ease-in-out infinite;
-}
-
-.price-tag i, .price-tag span {
-    font-size: 1.5rem;
-    color: #0A0A0A;
-}
-
-.shopping-cart {
-    position: absolute;
-    bottom: 10%;
-    left: 10%;
-    background: #CCCCCC;
-    padding: 15px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    animation: float 3s ease-in-out infinite;
-    animation-delay: 1s;
-}
-
-.shopping-cart i {
-    font-size: 1.5rem;
-    color: #0A0A0A;
-}
-
-@keyframes float {
-    0% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
-    100% { transform: translateY(0px); }
-}
-
-/* Add modern social proof section */
-.social-proof {
-    position: absolute;
-    bottom: 2rem;
-    left: 0;
-    right: 0;
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
-    color: var(--text-secondary);
-}
-
-.social-proof-item {
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 1rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition-smooth);
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.social-proof-item i {
-    color: var(--accent-primary);
+.btn-outline:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.3);
 }
 
-/* Add floating elements animation */
-.floating-elements {
+.camera-preview {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--radius-md);
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+#camera-preview, #captured-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: var(--radius-md);
+}
+
+#camera-placeholder {
+    text-align: center;
+    color: var(--text-muted);
+}
+
+#camera-placeholder i {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+.camera-controls {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+}
+
+/* Style pour les photos récentes */
+.recent-uploads {
+    margin-top: 2.5rem;
+    text-align: left;
+    width: 100%;
+    animation: fadeInUp 1s ease-out 0.6s both;
+}
+
+.upload-title {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.recent-photos {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding: 0.5rem 0;
+    scrollbar-width: none;
+}
+
+.recent-photos::-webkit-scrollbar {
+    display: none;
+}
+
+.recent-photo-item {
+    min-width: 120px;
+    height: 120px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(45deg, rgba(211, 84, 0, 0.15), rgba(230, 126, 34, 0.15));
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: var(--transition-smooth);
+}
+
+.recent-photo-item:hover {
+    transform: translateY(-5px);
+    border-color: rgba(230, 126, 34, 0.3);
+}
+
+.photo-time {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0.5rem;
+    font-size: 0.7rem;
+    background: rgba(0, 0, 0, 0.5);
+    color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+    .camera-controls {
+        flex-direction: column;
+    }
+    
+    .recent-photo-item {
+        min-width: 100px;
+        height: 100px;
+    }
+}
+
+/* Éléments graphiques d'arrière-plan */
+.background-graphics {
     position: absolute;
     top: 0;
     left: 0;
-    right: 0;
-    bottom: 0;
+    width: 100%;
+    height: 100%;
     overflow: hidden;
     pointer-events: none;
 }
 
-.floating-element {
+.food-icon {
     position: absolute;
-    background: var(--accent-gradient);
+    font-size: 2rem;
+    opacity: 0.3;
+    transition: all 0.5s ease;
+    animation: float 6s infinite ease-in-out;
+}
+
+.fruit {
+    color: #FF9800;
+    animation-delay: 0s;
+}
+
+.vegetable {
+    color: #4CAF50;
+    animation-delay: 1s;
+}
+
+.grain {
+    color: #FFC107;
+    animation-delay: 2s;
+}
+
+.protein {
+    color: #F44336;
+    animation-delay: 1.5s;
+}
+
+.dairy {
+    color: #FFFFFF;
+    animation-delay: 0.5s;
+}
+
+.price-bubble {
+    position: absolute;
+    background: var(--gradient-primary);
+    color: white;
     border-radius: 50%;
-    opacity: 0.1;
-    animation: float 20s infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    opacity: 0.7;
+    animation: bubble 8s infinite ease-in-out;
+}
+
+.price-bubble.small {
+    width: 50px;
+    height: 50px;
+    font-size: 0.9rem;
+    animation-delay: 1s;
+}
+
+.price-bubble.medium {
+    width: 70px;
+    height: 70px;
+    font-size: 1.1rem;
+    animation-delay: 2s;
+}
+
+.price-bubble.large {
+    width: 90px;
+    height: 90px;
+    font-size: 1.4rem;
+    animation-delay: 0s;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @keyframes float {
-    0%, 100% { transform: translate(0, 0); }
-    25% { transform: translate(100px, 100px); }
-    50% { transform: translate(0, 200px); }
-    75% { transform: translate(-100px, 100px); }
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes bubble {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 3rem;
+    }
+    
+    .nav-links {
+        display: none;
+    }
+    
+    .zyma-nav {
+        padding: 1rem;
+    }
+    
+    .search-container {
+        padding: 1.5rem;
+    }
+    
+    .food-icon, .price-bubble {
+        display: none;
+    }
 }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Gestion des onglets de recherche
+    const searchTabs = document.querySelectorAll('.search-tab');
+    const searchBoxes = document.querySelectorAll('.search-box');
+    
+    searchTabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            // Retirer la classe active de tous les onglets
+            searchTabs.forEach(t => t.classList.remove('active'));
+            
+            // Ajouter la classe active à l'onglet cliqué
+            this.classList.add('active');
+            
+            // Masquer toutes les boîtes de recherche
+            searchBoxes.forEach(box => box.classList.add('hidden'));
+            
+            // Afficher la boîte correspondante
+            const targetBox = document.getElementById(this.dataset.tab + '-search');
+            targetBox.classList.remove('hidden');
+        });
+    });
+    
+    // Variables pour les éléments de la caméra
+    const startCamera = document.getElementById('start-camera');
+    const capturePhoto = document.getElementById('capture-photo');
+    const retakePhoto = document.getElementById('retake-photo');
+    const uploadPhoto = document.getElementById('upload-photo');
+    
+    const cameraPreview = document.getElementById('camera-preview');
+    const cameraPlaceholder = document.getElementById('camera-placeholder');
+    const photoCanvas = document.getElementById('photo-canvas');
+    const capturedImage = document.getElementById('captured-image');
+    
+    let stream = null;
+    
+    // Démarrer la caméra
+    if (startCamera) {
+        startCamera.addEventListener('click', function() {
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+                    .then(function(mediaStream) {
+                        stream = mediaStream;
+                        cameraPreview.srcObject = mediaStream;
+                        cameraPreview.classList.remove('hidden');
+                        cameraPlaceholder.classList.add('hidden');
+                        
+                        startCamera.classList.add('hidden');
+                        capturePhoto.classList.remove('hidden');
+                    })
+                    .catch(function(error) {
+                        console.error("Impossible d'accéder à la caméra: ", error);
+                        alert("Impossible d'accéder à la caméra. Veuillez vérifier les permissions.");
+                    });
+            } else {
+                alert("Votre navigateur ne supporte pas l'accès à la caméra");
+            }
+        });
+    }
+    
+    // Prendre une photo
+    if (capturePhoto) {
+        capturePhoto.addEventListener('click', function() {
+            const context = photoCanvas.getContext('2d');
+            photoCanvas.width = cameraPreview.videoWidth;
+            photoCanvas.height = cameraPreview.videoHeight;
+            
+            context.drawImage(cameraPreview, 0, 0, photoCanvas.width, photoCanvas.height);
+            const imageDataUrl = photoCanvas.toDataURL('image/jpeg');
+            
+            capturedImage.src = imageDataUrl;
+            capturedImage.classList.remove('hidden');
+            cameraPreview.classList.add('hidden');
+            
+            capturePhoto.classList.add('hidden');
+            retakePhoto.classList.remove('hidden');
+            uploadPhoto.classList.remove('hidden');
+            
+            // Arrêter la caméra après la capture
+            stopCamera();
+        });
+    }
+    
+    // Reprendre une photo
+    if (retakePhoto) {
+        retakePhoto.addEventListener('click', function() {
+            capturedImage.classList.add('hidden');
+            
+            // Redémarrer la caméra
+            if (startCamera) {
+                startCamera.click();
+            }
+            
+            retakePhoto.classList.add('hidden');
+            uploadPhoto.classList.add('hidden');
+        });
+    }
+    
+    // Analyser la photo
+    if (uploadPhoto) {
+        uploadPhoto.addEventListener('click', function() {
+            // Simuler l'envoi de l'image pour analyse
+            alert("Cette fonctionnalité sera bientôt disponible !");
+        });
+    }
+    
+    // Fonction pour arrêter la caméra
+    function stopCamera() {
+        if (stream) {
+            stream.getTracks().forEach(track => {
+                track.stop();
+            });
+            stream = null;
+            cameraPreview.srcObject = null;
+        }
+    }
+});
+</script>
 @endsection
