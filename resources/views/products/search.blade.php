@@ -2,24 +2,6 @@
 
 @section('content')
 <div class="zyma-container">
-    <!-- Navigation avec barre de recherche intégrée -->
-    <nav class="zyma-nav">
-        <div class="logo-container">
-            <h1 class="zyma-logo">ZYMA</h1>
-            <div class="tagline">manger bien, payer moins</div>
-        </div>
-        <div class="nav-links">
-            <a href="{{ route('products.search') }}" class="nav-link">Découvrir</a>
-            <a href="{{ route('statistics') }}" class="nav-link">Statistiques</a>
-            <a href="{{ route('social.feed') }}" class="nav-link">Communauté</a>
-            @if(auth()->check())
-                <a href="{{ route('profile.show') }}" class="nav-link">Mon Profil</a>
-            @else
-                <a href="{{ route('login') }}" class="btn-connexion">Connexion</a>
-            @endif
-        </div>
-    </nav>
-
     <!-- Section héro avec scanner et comparateur -->
     <div class="hero-section">
         <div class="hero-content">
@@ -166,80 +148,6 @@ body, html {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-}
-
-/* Navigation */
-.zyma-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5rem 2rem;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000;
-    backdrop-filter: blur(10px);
-    background: rgba(0, 0, 0, 0.7);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.logo-container {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-}
-
-.zyma-logo {
-    font-weight: 800;
-    font-size: 2.2rem;
-    margin: 0;
-    background: var(--gradient-primary);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    letter-spacing: -1px;
-}
-
-.tagline {
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    margin-top: -0.3rem;
-    letter-spacing: 0.05rem;
-    font-weight: 400;
-}
-
-.nav-links {
-    display: flex;
-    gap: 1.5rem;
-    align-items: center;
-}
-
-.nav-link {
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 0.95rem;
-    font-weight: 500;
-    transition: var(--transition-smooth);
-}
-
-.nav-link:hover {
-    color: var(--text-primary);
-}
-
-.btn-connexion {
-    background-color: rgba(230, 126, 34, 0.15);
-    color: var(--accent-primary);
-    border: 1px solid rgba(230, 126, 34, 0.3);
-    padding: 0.6rem 1.2rem;
-    border-radius: var(--radius-sm);
-    font-weight: 500;
-    cursor: pointer;
-    transition: var(--transition-smooth);
-}
-
-.btn-connexion:hover {
-    background-color: rgba(230, 126, 34, 0.25);
-    transform: translateY(-2px);
 }
 
 /* Section héro */
@@ -619,14 +527,6 @@ body, html {
 @media (max-width: 768px) {
     .hero-title {
         font-size: 3rem;
-    }
-    
-    .nav-links {
-        display: none;
-    }
-    
-    .zyma-nav {
-        padding: 1rem;
     }
     
     .search-container {

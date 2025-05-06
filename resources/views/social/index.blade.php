@@ -2,6 +2,58 @@
 
 @section('content')
 <div class="container">
+    <style>
+        /* Orange principal */
+        :root {
+            --orange-main: #E67E22;
+            --orange-gradient: linear-gradient(135deg, #E67E22, #F39C12);
+        }
+        .btn-primary, .btn-primary:active, .btn-primary:focus {
+            background: var(--orange-gradient) !important;
+            border: none !important;
+            color: #fff !important;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(230,126,34,0.15);
+        }
+        .btn-primary:hover {
+            background: #e67e22 !important;
+            color: #fff !important;
+        }
+        .btn-outline-light.active, .btn-outline-light:active, .btn-outline-light:focus {
+            color: var(--orange-main) !important;
+            border-color: var(--orange-main) !important;
+            background: rgba(230,126,34,0.08) !important;
+        }
+        .btn-outline-light:hover {
+            color: var(--orange-main) !important;
+            border-color: var(--orange-main) !important;
+            background: rgba(230,126,34,0.12) !important;
+        }
+        .badge.bg-dark {
+            background: var(--orange-gradient) !important;
+            color: #fff !important;
+            font-weight: 600;
+        }
+        .alert-info {
+            border-left: 4px solid var(--orange-main) !important;
+            background: rgba(230,126,34,0.08) !important;
+            color: var(--orange-main) !important;
+        }
+        .page-link, .pagination .active .page-link {
+            color: var(--orange-main) !important;
+            border-color: var(--orange-main) !important;
+        }
+        .page-link:hover {
+            background: rgba(230,126,34,0.08) !important;
+            color: var(--orange-main) !important;
+        }
+        .text-info, .text-primary {
+            color: var(--orange-main) !important;
+        }
+        .text-secondary {
+            color: #A0A0A0 !important;
+        }
+    </style>
     <div class="row mb-4">
         <div class="col-12">
             <h1 class="display-5 mb-0">Feed Social</h1>
