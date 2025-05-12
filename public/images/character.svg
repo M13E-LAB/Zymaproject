@@ -1,0 +1,14 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="60" cy="60" r="58" fill="#333" stroke="#555" stroke-width="4"/>
+    <circle cx="60" cy="60" r="50" fill="#222"/>
+    <circle cx="60" cy="60" r="44" fill="#E67E22"/>
+    
+    <!-- Yeux -->
+    <circle cx="45" cy="50" r="6" fill="white"/>
+    <circle cx="75" cy="50" r="6" fill="white"/>
+    <circle cx="45" cy="50" r="3" fill="black"/>
+    <circle cx="75" cy="50" r="3" fill="black"/>
+    
+    <!-- Sourire -->
+    <path d="M40 75 Q60 90 80 75" stroke="white" stroke-width="4" stroke-linecap="round" fill="none"/>
+</svg> 

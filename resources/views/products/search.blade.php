@@ -34,6 +34,9 @@
                     <button class="search-tab active" data-tab="barcode">
                         <i class="fas fa-barcode"></i> Code-barres
                     </button>
+                    <button class="search-tab" data-tab="name">
+                        <i class="fas fa-shopping-basket"></i> Nom du produit
+                    </button>
                     <button class="search-tab" data-tab="camera">
                         <i class="fas fa-camera"></i> Photo
                     </button>
@@ -53,6 +56,22 @@
                             </button>
                         </div>
                     </form>
+                </div>
+
+                <div class="search-box hidden" id="name-search">
+                    <form action="{{ route('products.searchByName') }}" method="GET">
+                        <div class="input-group">
+                            <div class="input-icon">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <input type="text" name="query" class="search-input" id="productNameInput"
+                                   placeholder="Entrez le nom d'un produit..." required autocomplete="off">
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-search"></i> Rechercher
+                            </button>
+                        </div>
+                    </form>
+                    <div class="name-autocomplete" id="nameAutocomplete"></div>
                 </div>
                 
                 <div class="search-box hidden" id="camera-search">
@@ -496,38 +515,105 @@ body, html {
     color: var(--text-secondary);
 }
 
+/* Autocomplétion pour la recherche par nom */
+.name-autocomplete {
+    position: absolute;
+    top: calc(100% - 1.5rem);
+    left: 2rem;
+    right: 2rem;
+    background: rgba(30, 30, 30, 0.95);
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-top: none;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    box-shadow: var(--shadow-strong);
+    display: none;
+}
+
+.autocomplete-item {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    transition: var(--transition-smooth);
+}
+
+.autocomplete-item:hover {
+    background: rgba(230, 126, 34, 0.1);
+}
+
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
+
 @media (max-width: 768px) {
+    .hero-title {
+        font-size: 3rem;
+    }
+    
+    .search-tabs {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .search-tab {
+        border-radius: var(--radius-sm);
+    }
+    
     .camera-controls {
         flex-direction: column;
     }
     
-    .recent-photo-item {
-        min-width: 100px;
-        height: 100px;
+    .btn-primary, .btn-outline {
+        width: 100%;
+        justify-content: center;
     }
 }
 
-/* Éléments graphiques d'arrière-plan */
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
 .background-graphics {
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
+    right: 0;
+    bottom: 0;
     pointer-events: none;
+    z-index: 1;
 }
 
 .food-icon {
     position: absolute;
     font-size: 2rem;
-    opacity: 0.3;
-    transition: all 0.5s ease;
-    animation: float 6s infinite ease-in-out;
+    opacity: 0.2;
+    animation: float 6s ease-in-out infinite;
 }
 
 .fruit {
-    color: #FF9800;
+    color: #FF5722;
     animation-delay: 0s;
 }
 
@@ -542,218 +628,192 @@ body, html {
 }
 
 .protein {
-    color: #F44336;
-    animation-delay: 1.5s;
+    color: #9C27B0;
+    animation-delay: 3s;
 }
 
 .dairy {
-    color: #FFFFFF;
-    animation-delay: 0.5s;
+    color: #2196F3;
+    animation-delay: 4s;
 }
 
 .price-bubble {
     position: absolute;
-    background: var(--gradient-primary);
-    color: white;
     border-radius: 50%;
+    background: rgba(230, 126, 34, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
-    opacity: 0.7;
-    animation: bubble 8s infinite ease-in-out;
+    font-weight: 700;
+    border: 1px solid rgba(230, 126, 34, 0.4);
+    animation: float 8s ease-in-out infinite;
 }
 
 .price-bubble.small {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     font-size: 0.9rem;
     animation-delay: 1s;
 }
 
 .price-bubble.medium {
-    width: 70px;
-    height: 70px;
+    width: 80px;
+    height: 80px;
     font-size: 1.1rem;
     animation-delay: 2s;
 }
 
 .price-bubble.large {
-    width: 90px;
-    height: 90px;
-    font-size: 1.4rem;
-    animation-delay: 0s;
+    width: 100px;
+    height: 100px;
+    font-size: 1.3rem;
+    animation-delay: 3s;
 }
 
-/* Animations */
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes float {
-    0%, 100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-20px);
-    }
-}
-
-@keyframes bubble {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.1);
-    }
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .hero-title {
-        font-size: 3rem;
-    }
-    
-    .nav-links {
-        display: none;
-    }
-    
-    .zyma-nav {
-        padding: 1rem;
-    }
-    
-    .search-container {
-        padding: 1.5rem;
-    }
-    
-    .food-icon, .price-bubble {
-        display: none;
-    }
+.price-bubble span {
+    color: var(--accent-primary);
 }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Gestion des onglets de recherche
+    // Changer d'onglet de recherche
     const searchTabs = document.querySelectorAll('.search-tab');
     const searchBoxes = document.querySelectorAll('.search-box');
     
     searchTabs.forEach(tab => {
         tab.addEventListener('click', function() {
-            // Retirer la classe active de tous les onglets
+            // Désactiver tous les onglets
             searchTabs.forEach(t => t.classList.remove('active'));
-            
-            // Ajouter la classe active à l'onglet cliqué
-            this.classList.add('active');
-            
-            // Masquer toutes les boîtes de recherche
+            // Cacher toutes les boîtes de recherche
             searchBoxes.forEach(box => box.classList.add('hidden'));
             
-            // Afficher la boîte correspondante
-            const targetBox = document.getElementById(this.dataset.tab + '-search');
-            targetBox.classList.remove('hidden');
+            // Activer l'onglet cliqué
+            this.classList.add('active');
+            // Afficher la boîte de recherche correspondante
+            const tabName = this.getAttribute('data-tab');
+            document.getElementById(tabName + '-search').classList.remove('hidden');
         });
     });
     
-    // Variables pour les éléments de la caméra
-    const startCamera = document.getElementById('start-camera');
-    const capturePhoto = document.getElementById('capture-photo');
-    const retakePhoto = document.getElementById('retake-photo');
-    const uploadPhoto = document.getElementById('upload-photo');
-    
+    // Fonctionnalités de la caméra
+    const startCameraBtn = document.getElementById('start-camera');
+    const capturePhotoBtn = document.getElementById('capture-photo');
+    const retakePhotoBtn = document.getElementById('retake-photo');
+    const uploadPhotoBtn = document.getElementById('upload-photo');
     const cameraPreview = document.getElementById('camera-preview');
     const cameraPlaceholder = document.getElementById('camera-placeholder');
     const photoCanvas = document.getElementById('photo-canvas');
     const capturedImage = document.getElementById('captured-image');
     
-    let stream = null;
-    
-    // Démarrer la caméra
-    if (startCamera) {
-        startCamera.addEventListener('click', function() {
+    if (startCameraBtn) {
+        startCameraBtn.addEventListener('click', function() {
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-                    .then(function(mediaStream) {
-                        stream = mediaStream;
-                        cameraPreview.srcObject = mediaStream;
+                    .then(function(stream) {
+                        cameraPreview.srcObject = stream;
                         cameraPreview.classList.remove('hidden');
                         cameraPlaceholder.classList.add('hidden');
-                        
-                        startCamera.classList.add('hidden');
-                        capturePhoto.classList.remove('hidden');
+                        startCameraBtn.classList.add('hidden');
+                        capturePhotoBtn.classList.remove('hidden');
                     })
                     .catch(function(error) {
-                        console.error("Impossible d'accéder à la caméra: ", error);
-                        alert("Impossible d'accéder à la caméra. Veuillez vérifier les permissions.");
+                        alert('Impossible d\'accéder à la caméra: ' + error.message);
                     });
             } else {
-                alert("Votre navigateur ne supporte pas l'accès à la caméra");
+                alert('Votre navigateur ne supporte pas l\'accès à la caméra');
             }
         });
     }
     
-    // Prendre une photo
-    if (capturePhoto) {
-        capturePhoto.addEventListener('click', function() {
-            const context = photoCanvas.getContext('2d');
+    if (capturePhotoBtn) {
+        capturePhotoBtn.addEventListener('click', function() {
             photoCanvas.width = cameraPreview.videoWidth;
             photoCanvas.height = cameraPreview.videoHeight;
+            photoCanvas.getContext('2d').drawImage(cameraPreview, 0, 0, photoCanvas.width, photoCanvas.height);
             
-            context.drawImage(cameraPreview, 0, 0, photoCanvas.width, photoCanvas.height);
-            const imageDataUrl = photoCanvas.toDataURL('image/jpeg');
-            
-            capturedImage.src = imageDataUrl;
+            capturedImage.src = photoCanvas.toDataURL('image/png');
             capturedImage.classList.remove('hidden');
             cameraPreview.classList.add('hidden');
             
-            capturePhoto.classList.add('hidden');
-            retakePhoto.classList.remove('hidden');
-            uploadPhoto.classList.remove('hidden');
+            capturePhotoBtn.classList.add('hidden');
+            retakePhotoBtn.classList.remove('hidden');
+            uploadPhotoBtn.classList.remove('hidden');
             
-            // Arrêter la caméra après la capture
-            stopCamera();
+            // Arrêter la caméra
+            cameraPreview.srcObject.getTracks().forEach(track => track.stop());
         });
     }
     
-    // Reprendre une photo
-    if (retakePhoto) {
-        retakePhoto.addEventListener('click', function() {
+    if (retakePhotoBtn) {
+        retakePhotoBtn.addEventListener('click', function() {
             capturedImage.classList.add('hidden');
+            retakePhotoBtn.classList.add('hidden');
+            uploadPhotoBtn.classList.add('hidden');
+            startCameraBtn.classList.remove('hidden');
+        });
+    }
+    
+    if (uploadPhotoBtn) {
+        uploadPhotoBtn.addEventListener('click', function() {
+            alert('Analyse en cours... Cette fonctionnalité est en développement.');
+        });
+    }
+    
+    // Autocomplétion pour la recherche par nom
+    const productNameInput = document.getElementById('productNameInput');
+    const nameAutocomplete = document.getElementById('nameAutocomplete');
+    
+    if (productNameInput && nameAutocomplete) {
+        productNameInput.addEventListener('input', function() {
+            const query = this.value.trim();
             
-            // Redémarrer la caméra
-            if (startCamera) {
-                startCamera.click();
+            if (query.length >= 2) {
+                // Requête AJAX pour récupérer les suggestions
+                fetch(`/api/products/search?query=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        nameAutocomplete.innerHTML = '';
+                        
+                        if (data.length > 0) {
+                            data.forEach(product => {
+                                const item = document.createElement('div');
+                                item.className = 'autocomplete-item';
+                                item.textContent = product.name;
+                                
+                                item.addEventListener('click', function() {
+                                    productNameInput.value = product.name;
+                                    nameAutocomplete.style.display = 'none';
+                                    document.querySelector('#name-search form').submit();
+                                });
+                                
+                                nameAutocomplete.appendChild(item);
+                            });
+                            
+                            nameAutocomplete.style.display = 'block';
+                        } else {
+                            nameAutocomplete.style.display = 'none';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erreur lors de la recherche :', error);
+                    });
+            } else {
+                nameAutocomplete.style.display = 'none';
             }
-            
-            retakePhoto.classList.add('hidden');
-            uploadPhoto.classList.add('hidden');
         });
-    }
-    
-    // Analyser la photo
-    if (uploadPhoto) {
-        uploadPhoto.addEventListener('click', function() {
-            // Simuler l'envoi de l'image pour analyse
-            alert("Cette fonctionnalité sera bientôt disponible !");
+        
+        productNameInput.addEventListener('focus', function() {
+            if (this.value.length >= 2) {
+                nameAutocomplete.style.display = 'block';
+            }
         });
-    }
-    
-    // Fonction pour arrêter la caméra
-    function stopCamera() {
-        if (stream) {
-            stream.getTracks().forEach(track => {
-                track.stop();
-            });
-            stream = null;
-            cameraPreview.srcObject = null;
-        }
+        
+        document.addEventListener('click', function(event) {
+            if (!productNameInput.contains(event.target) && !nameAutocomplete.contains(event.target)) {
+                nameAutocomplete.style.display = 'none';
+            }
+        });
     }
 });
 </script>

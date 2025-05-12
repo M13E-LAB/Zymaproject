@@ -1,263 +1,269 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
-            @if(session('success'))
-            <div class="alert alert-info mb-4">
-                <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
-            </div>
-            @endif
-            
-            <div class="card mb-5 profile-hero">
-                <div class="card-body p-lg-5">
-                    <div class="row align-items-center">
-                        <div class="col-md-3 text-center mb-4 mb-md-0">
+<div class="profile-container">
+    <div class="container">
+        <!-- En-tête du profil -->
+        <h1 class="section-title mb-4">Mon profil</h1>
+        
+        <div class="row">
+            <div class="col-lg-4 mb-4">
+                <!-- Carte principale du profil -->
+                <div class="card profile-card">
+                    <div class="card-body">
+                        <div class="profile-header">
                             <div class="avatar-container">
-                                <div class="avatar-wrapper">
-                                    @if($user->avatar)
-                                        <img src="{{ $user->avatar }}" alt="Avatar" class="avatar-large">
-                                    @else
-                                        <div class="avatar-placeholder">
-                                            <i class="fas fa-user"></i>
-                                        </div>
-                                    @endif
-                                    <div class="level-badge">{{ $user->level_title }}</div>
+                                @if($user->avatar)
+                                    <img src="{{ $user->avatar }}" alt="Avatar" class="profile-avatar">
+                                @else
+                                    <div class="profile-avatar-placeholder">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                @endif
+                                <div class="level-badge">{{ $user->level_title ?? 'Débutant' }}</div>
+                            </div>
+                            
+                            <h2 class="profile-name">{{ $user->name }}</h2>
+                            @if($user->username)
+                                <p class="profile-username">@{{ $user->username }}</p>
+                            @endif
+                            
+                            <div class="profile-stats">
+                                <div class="stat-item">
+                                    <span class="stat-value">{{ $user->posts_count ?? 0 }}</span>
+                                    <span class="stat-label">Publications</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value">{{ $user->points ?? 0 }}</span>
+                                    <span class="stat-label">Points</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-value">{{ $user->badges_count ?? 0 }}</span>
+                                    <span class="stat-label">Badges</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-9">
-                            <div class="d-flex justify-content-between align-items-start mb-3">
-                                <div>
-                                    <h1 class="profile-name mb-0">{{ $user->name }}</h1>
-                                    <p class="text-secondary mb-2">
-                                        @if($user->username)
-                                            <span class="username">@{{ $user->username }}</span>
-                                        @else
-                                            <span class="text-muted fst-italic">Aucun nom d'utilisateur défini</span>
-                                        @endif
-                                    </p>
-                                </div>
-                                <a href="{{ route('profile.edit') }}" class="btn btn-sm btn-edit-profile">
-                                    <i class="fas fa-pencil-alt me-2"></i> Modifier
-                                </a>
-                            </div>
+                        
+                        <div class="profile-bio">
+                            @if($user->bio)
+                                <p>{{ $user->bio }}</p>
+                            @else
+                                <p class="text-muted">Aucune bio définie. <a href="{{ route('profile.edit') }}" class="edit-link">Ajouter une bio</a></p>
+                            @endif
+                        </div>
+                        
+                        <div class="profile-actions">
+                            <a href="{{ route('profile.edit') }}" class="btn btn-edit">
+                                <i class="fas fa-pencil-alt"></i> Modifier mon profil
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Carte des badges -->
+                <div class="card profile-card mt-4">
+                    <div class="card-header">
+                        <h3 class="card-title">Mes badges</h3>
+                        <a href="{{ route('profile.badges') }}" class="badge-link">Voir tous</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="badges-container">
+                            @if(isset($earnedBadges) && count($earnedBadges) > 0)
+                                @foreach($earnedBadges->take(3) as $badge)
+                                    <div class="badge-item">
+                                        <div class="badge-icon {{ $badge->rarity_class }}">
+                                            <i class="fas fa-{{ $badge->icon }}"></i>
+                                        </div>
+                                        <div class="badge-info">
+                                            <span class="badge-name">{{ $badge->name }}</span>
+                                            <span class="badge-desc">{{ $badge->description }}</span>
+                                        </div>
+                                        <div class="badge-reward">
+                                            <span class="points-reward">+{{ $badge->points }}</span>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @else
+                                <p class="text-muted">Participez à la <span class="d-inline-flex align-items-center">communauté <img src="{{ asset('images/etchelast-logo.svg') }}" width="18" height="18" class="mx-1"> ZYMA</span> pour obtenir des badges!</p>
+                            @endif
                             
-                            <div class="bio mb-4">
-                                @if($user->bio)
-                                    <p>{{ $user->bio }}</p>
-                                @else
-                                    <p class="text-muted fst-italic">Aucune bio définie</p>
-                                @endif
-                            </div>
-                            
-                            <div class="user-stats">
-                                <div class="row">
-                                    <div class="col-4">
-                                        <div class="stat-item">
-                                            <div class="stat-icon">
-                                                <i class="fas fa-star"></i>
+                            @if(isset($availableBadges) && count($availableBadges) > 0)
+                                <div class="mt-3">
+                                    <h5 class="mb-2">Badges à débloquer</h5>
+                                    <div class="available-badges">
+                                        @foreach($availableBadges->take(2) as $badge)
+                                            <div class="badge-item locked">
+                                                <div class="badge-icon locked {{ $badge->rarity_class }}">
+                                                    <i class="fas fa-{{ $badge->icon }}"></i>
+                                                </div>
+                                                <div class="badge-info">
+                                                    <span class="badge-name">{{ $badge->name }}</span>
+                                                    <span class="badge-desc">{{ $badge->description }}</span>
+                                                </div>
                                             </div>
-                                            <div class="stat-text">
-                                                <h3>{{ $user->points ?? 0 }}</h3>
-                                                <p>Points</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="stat-item">
-                                            <div class="stat-icon">
-                                                <i class="fas fa-share-alt"></i>
-                                            </div>
-                                            <div class="stat-text">
-                                                <h3>{{ $user->posts()->count() }}</h3>
-                                                <p>Partages</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-4">
-                                        <div class="stat-item">
-                                            <div class="stat-icon">
-                                                <i class="fas fa-medal"></i>
-                                            </div>
-                                            <div class="stat-text">
-                                                <h3>{{ $user->badges()->count() }}</h3>
-                                                <p>Badges</p>
-                                            </div>
-                                        </div>
+                                        @endforeach
                                     </div>
                                 </div>
-                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
             </div>
             
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="card mb-4 level-progress-card">
-                        <div class="card-body p-4">
-                            <h2 class="card-title with-icon">
-                                <i class="fas fa-trophy"></i> Progression
-                            </h2>
-                            
-                            <div class="level-info mb-3">
-                                <div class="d-flex justify-content-between">
-                                    <h3 class="level-title">{{ $user->level_title }}</h3>
-                                    @if($user->next_level_points)
-                                        <p class="level-target">
-                                            <span class="current-points">{{ $user->points ?? 0 }}</span> / 
-                                            <span class="target-points">{{ $user->next_level_points }}</span> points
-                                        </p>
-                                    @else
-                                        <p class="level-max">Niveau maximum atteint !</p>
-                                    @endif
-                                </div>
-                                
-                                <div class="progress progress-lg">
-                                    <div class="progress-bar" role="progressbar" style="width: {{ $user->level_progress }}%;" 
-                                        aria-valuenow="{{ $user->level_progress }}" aria-valuemin="0" aria-valuemax="100">
-                                        {{ round($user->level_progress) }}%
+            <div class="col-lg-8">
+                <!-- Carte des statistiques de points -->
+                <div class="card profile-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Points actuels</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-5">
+                                <div class="points-chart">
+                                    <div class="points-circle">
+                                        <div class="inner-circle">
+                                            <span class="points-value">{{ $user->points ?? 0 }}</span>
+                                        </div>
                                     </div>
-                                </div>
-                                
-                                <div class="level-description mt-3">
-                                    @if($user->level_title == 'Débutant')
-                                        <p>Vous débutez votre aventure. Partagez des produits et complétez votre profil pour gagner des points.</p>
-                                    @elseif($user->level_title == 'Éclaireur')
-                                        <p>Vous êtes un contributeur régulier. Continuez à partager pour atteindre le niveau Expert !</p>
-                                    @elseif($user->level_title == 'Expert')
-                                        <p>Vous êtes un membre important de la communauté. Encore un effort pour devenir Maître !</p>
-                                    @elseif($user->level_title == 'Maître')
-                                        <p>Vous êtes un maître de ZYMA ! Continuez à partager votre expertise avec la communauté.</p>
-                                    @endif
                                 </div>
                             </div>
-                            
-                            <div class="level-milestones">
-                                <h4>Prochains paliers</h4>
-                                <div class="milestones-list">
-                                    <div class="milestone @if($user->points >= 101) achieved @endif">
-                                        <div class="milestone-marker">
-                                            <i class="fas @if($user->points >= 101) fa-check-circle @else fa-circle @endif"></i>
-                                        </div>
-                                        <div class="milestone-content">
-                                            <h5>Éclaireur</h5>
-                                            <p>101 points - Débloquez de nouvelles fonctionnalités</p>
-                                        </div>
+                            <div class="col-md-7">
+                                <div class="level-info">
+                                    <h4 class="level-title">Niveau: {{ $user->level_title ?? 'Débutant' }}</h4>
+                                    <div class="progress level-progress">
+                                        <div class="progress-bar" role="progressbar" style="width: {{ $user->level_progress ?? 0 }}%" aria-valuenow="{{ $user->level_progress ?? 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
                                     </div>
-                                    
-                                    <div class="milestone @if($user->points >= 501) achieved @endif">
-                                        <div class="milestone-marker">
-                                            <i class="fas @if($user->points >= 501) fa-check-circle @else fa-circle @endif"></i>
-                                        </div>
-                                        <div class="milestone-content">
-                                            <h5>Expert</h5>
-                                            <p>501 points - Débloquez des fonctionnalités avancées</p>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="milestone @if($user->points >= 2001) achieved @endif">
-                                        <div class="milestone-marker">
-                                            <i class="fas @if($user->points >= 2001) fa-check-circle @else fa-circle @endif"></i>
-                                        </div>
-                                        <div class="milestone-content">
-                                            <h5>Maître</h5>
-                                            <p>2001 points - Statut ultime de ZYMA</p>
-                                        </div>
-                                    </div>
+                                    <p class="next-level">
+                                        <span>Prochain niveau: {{ $user->next_level_title ?? 'Éclaireur' }}</span>
+                                        <span class="points-needed">{{ $user->points_to_next_level ?? 100 }} points restants</span>
+                                    </p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <div class="col-md-4">
-                    <div class="card mb-4 badges-card">
-                        <div class="card-body p-4">
-                            <h2 class="card-title with-icon">
-                                <i class="fas fa-medal"></i> Badges
-                            </h2>
+                <!-- Historique des transactions de points -->
+                <div class="card profile-card mt-4">
+                    <div class="card-header">
+                        <h3 class="card-title">Transactions de points</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="transaction-tabs">
+                            <div class="nav nav-tabs" id="transactionTabs" role="tablist">
+                                <button class="nav-link active" id="partages-tab" data-bs-toggle="tab" data-bs-target="#partages" type="button" role="tab" aria-controls="partages" aria-selected="true">Partages</button>
+                                <button class="nav-link" id="profil-tab" data-bs-toggle="tab" data-bs-target="#profil" type="button" role="tab" aria-controls="profil" aria-selected="false">Profil</button>
+                                <button class="nav-link" id="commentaires-tab" data-bs-toggle="tab" data-bs-target="#commentaires" type="button" role="tab" aria-controls="commentaires" aria-selected="false">Commentaires</button>
+                            </div>
+                        </div>
+                        
+                        <div class="tab-content" id="transactionTabsContent">
+                            <div class="tab-pane fade show active" id="partages" role="tabpanel" aria-labelledby="partages-tab">
+                                <table class="table transaction-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ACTION</th>
+                                            <th>DESCRIPTION</th>
+                                            <th>POINTS</th>
+                                            <th>DATE</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if(isset($pointTransactions) && count($pointTransactions) > 0)
+                                            @foreach($pointTransactions as $transaction)
+                                                <tr>
+                                                    <td>{{ $transaction->action }}</td>
+                                                    <td>{{ $transaction->description }}</td>
+                                                    <td class="points-cell {{ $transaction->amount > 0 ? 'positive' : 'negative' }}">
+                                                        {{ $transaction->amount > 0 ? '+' : '' }}{{ $transaction->amount }}
+                                                    </td>
+                                                    <td>{{ $transaction->created_at->format('d/m/Y') }}</td>
+                                                </tr>
+                                            @endforeach
+                                        @else
+                                            <tr>
+                                                <td colspan="4" class="text-center">
+                                                    <div class="empty-state">
+                                                        <div class="empty-icon">
+                                                            <i class="fas fa-star"></i>
+                                                        </div>
+                                                        <p>Aucune transaction de points pour le moment.</p>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    </tbody>
+                                </table>
+                            </div>
                             
-                            <div class="badges-grid">
-                                <div class="badge-item @if($user->hasBadge('welcome')) earned @endif" data-bs-toggle="tooltip" title="Premier jour - Inscription">
-                                    <i class="fas fa-user-plus"></i>
-                                </div>
-                                
-                                <div class="badge-item @if($user->hasBadge('profile_complete')) earned @endif" data-bs-toggle="tooltip" title="Profil complet">
-                                    <i class="fas fa-id-card"></i>
-                                </div>
-                                
-                                <div class="badge-item @if($user->hasBadge('first_share')) earned @endif" data-bs-toggle="tooltip" title="Premier partage">
-                                    <i class="fas fa-share-alt"></i>
-                                </div>
-                                
-                                <div class="badge-item @if($user->hasBadge('five_shares')) earned @endif" data-bs-toggle="tooltip" title="5 partages">
-                                    <i class="fas fa-share-square"></i>
-                                </div>
-                                
-                                <div class="badge-item @if($user->hasBadge('twenty_shares')) earned @endif" data-bs-toggle="tooltip" title="20 partages">
-                                    <i class="fas fa-award"></i>
-                                </div>
-                                
-                                <div class="badge-item @if($user->hasBadge('first_comment')) earned @endif" data-bs-toggle="tooltip" title="Premier commentaire">
-                                    <i class="fas fa-comment"></i>
+                            <div class="tab-pane fade" id="profil" role="tabpanel" aria-labelledby="profil-tab">
+                                <!-- Contenu pour l'onglet Profil -->
+                                <div class="empty-state">
+                                    <div class="empty-icon">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <p>Les transactions liées au profil s'afficheront ici.</p>
                                 </div>
                             </div>
                             
-                            <div class="text-center mt-4">
-                                <a href="#" class="btn btn-sm btn-view-all-badges">
-                                    Voir tous les badges <i class="fas fa-arrow-right ms-1"></i>
-                                </a>
+                            <div class="tab-pane fade" id="commentaires" role="tabpanel" aria-labelledby="commentaires-tab">
+                                <!-- Contenu pour l'onglet Commentaires -->
+                                <div class="empty-state">
+                                    <div class="empty-icon">
+                                        <i class="fas fa-comment"></i>
+                                    </div>
+                                    <p>Les transactions liées aux commentaires s'afficheront ici.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="card recent-activity-card">
-                        <div class="card-body p-4">
-                            <h2 class="card-title with-icon">
-                                <i class="fas fa-history"></i> Activité récente
-                            </h2>
-                            
-                            <div class="activity-timeline">
-                                @foreach($user->pointTransactions()->latest()->take(5)->get() as $transaction)
-                                <div class="activity-item">
-                                    <div class="activity-icon">
-                                        @if(strpos($transaction->action_type, 'share') !== false)
-                                            <i class="fas fa-share-alt"></i>
-                                        @elseif(strpos($transaction->action_type, 'comment') !== false)
-                                            <i class="fas fa-comment"></i>
-                                        @elseif(strpos($transaction->action_type, 'profile') !== false)
-                                            <i class="fas fa-user-edit"></i>
-                                        @elseif(strpos($transaction->action_type, 'login') !== false)
-                                            <i class="fas fa-sign-in-alt"></i>
-                                        @else
-                                            <i class="fas fa-star"></i>
-                                        @endif
+                </div>
+                
+                <!-- Publications récentes -->
+                <div class="card profile-card mt-4">
+                    <div class="card-header">
+                        <h3 class="card-title">Mes publications récentes</h3>
+                        <a href="{{ route('profile.posts') }}" class="posts-link">Voir toutes</a>
+                    </div>
+                    <div class="card-body">
+                        @if(isset($recentPosts) && count($recentPosts) > 0)
+                            <div class="recent-posts">
+                                @foreach($recentPosts as $post)
+                                    <div class="post-item">
+                                        <div class="post-image">
+                                            @if($post->image)
+                                                <img src="{{ $post->image }}" alt="Post image">
+                                            @else
+                                                <div class="post-image-placeholder">
+                                                    <i class="fas fa-image"></i>
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div class="post-content">
+                                            <h4 class="post-title">{{ $post->title }}</h4>
+                                            <p class="post-excerpt">{{ Str::limit($post->content, 100) }}</p>
+                                            <div class="post-meta">
+                                                <span class="post-date">{{ $post->created_at->format('d/m/Y') }}</span>
+                                                <span class="post-interactions">
+                                                    <i class="fas fa-heart"></i> {{ $post->likes_count }}
+                                                    <i class="fas fa-comment"></i> {{ $post->comments_count }}
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="activity-content">
-                                        <p class="activity-text">{{ $transaction->description }}</p>
-                                        <p class="activity-points">+{{ $transaction->points }} points</p>
-                                        <p class="activity-time">{{ $transaction->created_at->diffForHumans() }}</p>
-                                    </div>
-                                </div>
                                 @endforeach
-                                
-                                @if($user->pointTransactions()->count() == 0)
-                                    <div class="text-center text-muted py-4">
-                                        <i class="fas fa-history mb-2" style="font-size: 2rem;"></i>
-                                        <p>Aucune activité récente</p>
-                                    </div>
-                                @endif
                             </div>
-                            
-                            <div class="text-center mt-3">
-                                <a href="{{ route('profile.points') }}" class="btn btn-sm btn-view-all-activity">
-                                    Voir toute l'activité <i class="fas fa-arrow-right ms-1"></i>
+                        @else
+                            <div class="empty-state">
+                                <div class="empty-icon">
+                                    <i class="fas fa-file-alt"></i>
+                                </div>
+                                <p>Vous n'avez pas encore publié de contenu.</p>
+                                <a href="{{ route('social.create') }}" class="btn btn-create-post">
+                                    <i class="fas fa-plus"></i> Créer une publication
                                 </a>
                             </div>
-                        </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -266,448 +272,560 @@
 </div>
 
 <style>
-/* DESIGN SYSTÈME DE NIVEAU ET GAMIFICATION */
-.profile-hero {
-    border: none;
-    border-radius: 24px;
-    overflow: hidden;
-    background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
-    position: relative;
-    z-index: 1;
-}
-
-.profile-hero:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 100%;
-    background: url('https://i.imgur.com/JXaIwsM.png') no-repeat center center;
-    background-size: cover;
-    opacity: 0.05;
-    z-index: -1;
-}
-
-.avatar-container {
-    position: relative;
-    display: inline-block;
-}
-
-.avatar-wrapper {
-    position: relative;
-    display: inline-block;
-}
-
-.avatar-large {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 4px solid var(--accent-primary);
-    box-shadow: 0 0 30px rgba(0, 209, 178, 0.3);
-}
-
-.avatar-placeholder {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    background: var(--accent-gradient);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 4rem;
-    color: var(--bg-primary);
-}
-
-.level-badge {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    background: var(--accent-gradient);
-    color: var(--bg-primary);
-    font-weight: bold;
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-size: 0.9rem;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transform: translateY(25%);
-}
-
-.profile-name {
-    font-size: 2.5rem;
-    font-weight: 800;
-    letter-spacing: -1px;
-    color: var(--text-primary);
-    margin-bottom: 0.5rem;
-}
-
-.username {
-    font-size: 1.2rem;
-    color: var(--accent-primary);
-    font-weight: 600;
-}
-
-.btn-edit-profile {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-primary);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 12px;
-    transition: all 0.3s ease;
-}
-
-.btn-edit-profile:hover {
-    background: var(--accent-primary);
-    color: var(--bg-primary);
-    transform: translateY(-2px);
-}
-
-.bio {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    max-height: 4.8em;
-    overflow: hidden;
-    position: relative;
-}
-
-.user-stats {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 16px;
-    padding: 1.5rem;
-    margin-top: 1rem;
-}
-
-.stat-item {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    text-align: center;
-    transition: all 0.3s ease;
-    padding: 1rem;
-    border-radius: 12px;
-}
-
-.stat-item:hover {
-    background: rgba(255, 255, 255, 0.05);
-    transform: translateY(-3px);
-}
-
-.stat-icon {
-    font-size: 2rem;
-    color: var(--accent-primary);
-    margin-bottom: 0.5rem;
-}
-
-.stat-text h3 {
-    font-size: 2rem;
-    font-weight: 800;
-    margin-bottom: 0;
-    background: var(--accent-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.stat-text p {
-    margin-bottom: 0;
-    color: var(--text-secondary);
-    font-weight: 600;
-    font-size: 0.9rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.card-title.with-icon {
-    display: flex;
-    align-items: center;
-    font-size: 1.4rem;
-    margin-bottom: 1.5rem;
-    font-weight: 700;
-    color: var(--text-primary);
-}
-
-.card-title.with-icon i {
-    color: var(--accent-primary);
-    margin-right: 0.8rem;
-    font-size: 1.2rem;
-}
-
-.level-progress-card, .badges-card, .recent-activity-card {
-    border: none;
-    border-radius: 24px;
-    overflow: hidden;
-}
-
-.level-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--accent-primary);
-    margin-bottom: 0;
-}
-
-.level-target, .level-max {
-    font-weight: 600;
-    color: var(--text-secondary);
-    margin-bottom: 0;
-}
-
-.current-points {
-    color: var(--accent-primary);
-    font-weight: 700;
-}
-
-.progress-lg {
-    height: 1.5rem;
-    border-radius: 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    margin: 1rem 0;
-}
-
-.progress-bar {
-    border-radius: 1rem;
-    background: var(--accent-gradient);
-    font-weight: 600;
-    color: var(--bg-primary);
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    box-shadow: 0 0 10px rgba(0, 209, 178, 0.3);
-    position: relative;
-    overflow: hidden;
-}
-
-.progress-bar:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: linear-gradient(45deg, rgba(255,255,255,0.2) 25%, transparent 25%, transparent 50%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.2) 75%, transparent 75%, transparent);
-    background-size: 30px 30px;
-    animation: progress-animation 2s linear infinite;
-    opacity: 0.5;
-}
-
-@keyframes progress-animation {
-    0% { background-position: 0 0; }
-    100% { background-position: 30px 0; }
-}
-
-.level-description {
-    background: rgba(0, 0, 0, 0.2);
-    padding: 1rem;
-    border-radius: 12px;
-    border-left: 4px solid var(--accent-primary);
-}
-
-.level-description p {
-    margin-bottom: 0;
-    font-size: 0.95rem;
-}
-
-.level-milestones {
-    margin-top: 2rem;
-}
-
-.level-milestones h4 {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-    color: var(--text-primary);
-    font-weight: 600;
-}
-
-.milestones-list {
-    position: relative;
-}
-
-.milestones-list:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 15px;
-    width: 2px;
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.milestone {
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 1.5rem;
-    position: relative;
-}
-
-.milestone-marker {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: var(--bg-tertiary);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 1rem;
-    z-index: 1;
-    color: var(--text-secondary);
-}
-
-.milestone.achieved .milestone-marker {
-    background: var(--accent-primary);
-    border-color: var(--accent-primary);
-    color: var(--bg-primary);
-    box-shadow: 0 0 15px rgba(0, 209, 178, 0.4);
-}
-
-.milestone-content {
-    flex: 1;
-}
-
-.milestone-content h5 {
-    font-size: 1.1rem;
-    margin-bottom: 0.2rem;
-    color: var(--text-primary);
-    font-weight: 600;
-}
-
-.milestone-content p {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    margin-bottom: 0;
-}
-
-.milestone.achieved .milestone-content h5 {
-    color: var(--accent-primary);
-}
-
-.badges-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.2rem;
-    margin: 1rem 0;
-}
-
-.badge-item {
-    width: 70px;
-    height: 70px;
-    margin: 0 auto;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.badge-item:hover {
-    transform: translateY(-5px) rotate(5deg);
-}
-
-.badge-item.earned {
-    animation: badge-glow 2s ease-in-out infinite alternate;
-}
-
-@keyframes badge-glow {
-    from { box-shadow: 0 0 10px rgba(0, 209, 178, 0.3); }
-    to { box-shadow: 0 0 20px rgba(0, 209, 178, 0.7); }
-}
-
-.btn-view-all-badges, .btn-view-all-activity {
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text-primary);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
-    padding: 0.5rem 1rem;
-}
-
-.btn-view-all-badges:hover, .btn-view-all-activity:hover {
-    background: var(--accent-primary);
-    color: var(--bg-primary);
-    transform: translateY(-2px);
-}
-
-.activity-timeline {
-    margin: 1rem 0;
-}
-
-.activity-item {
-    display: flex;
-    align-items: flex-start;
-    padding: 1rem;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.02);
-    margin-bottom: 1rem;
-    transition: all 0.3s ease;
-}
-
-.activity-item:hover {
-    background: rgba(255, 255, 255, 0.05);
-    transform: translateX(5px);
-}
-
-.activity-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: var(--accent-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 1rem;
-    color: var(--bg-primary);
-    flex-shrink: 0;
-}
-
-.activity-content {
-    flex: 1;
-}
-
-.activity-text {
-    margin-bottom: 0.2rem;
-    font-weight: 500;
-}
-
-.activity-points {
-    margin-bottom: 0.2rem;
-    font-weight: 700;
-    color: var(--accent-primary);
-}
-
-.activity-time {
-    margin-bottom: 0;
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-}
-
-/* Animation de l'intro */
-.profile-hero, .level-progress-card, .badges-card, .recent-activity-card {
-    opacity: 0;
-    transform: translateY(30px);
-    animation: fadeInUp 0.8s forwards;
-}
-
-.level-progress-card {
-    animation-delay: 0.2s;
-}
-
-.badges-card {
-    animation-delay: 0.4s;
-}
-
-.recent-activity-card {
-    animation-delay: 0.6s;
-}
-
-@keyframes fadeInUp {
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    /* Styles généraux */
+    .profile-container {
+        background-color: #000;
+        color: #fff;
+        padding: 2rem 0;
+        min-height: calc(100vh - 70px);
     }
-}
+    
+    .section-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Cartes */
+    .profile-card {
+        background-color: #111;
+        border: 1px solid #222;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .card-header {
+        background-color: #191919;
+        border-bottom: 1px solid #333;
+        padding: 1rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .card-title {
+        margin: 0;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #fff;
+    }
+    
+    .card-body {
+        padding: 1.5rem;
+    }
+    
+    /* Avatar et informations de profil */
+    .profile-header {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .avatar-container {
+        position: relative;
+        margin-bottom: 1rem;
+    }
+    
+    .profile-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #E67E22;
+    }
+    
+    .profile-avatar-placeholder {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #666;
+        font-size: 2.5rem;
+        border: 3px solid #E67E22;
+    }
+    
+    .level-badge {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background-color: #E67E22;
+        color: #fff;
+        font-size: 0.7rem;
+        padding: 0.2rem 0.6rem;
+        border-radius: 12px;
+        font-weight: 600;
+    }
+    
+    .profile-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.3rem;
+    }
+    
+    .profile-username {
+        color: #999;
+        margin-bottom: 1rem;
+        font-size: 0.9rem;
+    }
+    
+    /* Statistiques du profil */
+    .profile-stats {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+        margin-bottom: 1.5rem;
+        border-top: 1px solid #222;
+        border-bottom: 1px solid #222;
+        padding: 1rem 0;
+    }
+    
+    .stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .stat-value {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #E67E22;
+    }
+    
+    .stat-label {
+        font-size: 0.8rem;
+        color: #999;
+        margin-top: 0.2rem;
+    }
+    
+    /* Bio et actions */
+    .profile-bio {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        color: #ccc;
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+    
+    .profile-actions {
+        display: flex;
+        justify-content: center;
+    }
+    
+    .btn-edit {
+        background-color: #333;
+        color: #fff;
+        border: none;
+        padding: 0.5rem 1.2rem;
+        border-radius: 5px;
+        font-size: 0.9rem;
+        transition: all 0.3s;
+    }
+    
+    .btn-edit:hover {
+        background-color: #444;
+        color: #fff;
+    }
+    
+    /* Graphique de points */
+    .points-chart {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1rem;
+    }
+    
+    .points-circle {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #E67E22, #F39C12);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+    }
+    
+    .inner-circle {
+        width: 125px;
+        height: 125px;
+        border-radius: 50%;
+        background-color: #191919;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    .points-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #fff;
+    }
+    
+    /* Information de niveau */
+    .level-info {
+        padding: 1rem;
+    }
+    
+    .level-title {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        color: #E67E22;
+    }
+    
+    .level-progress {
+        height: 8px;
+        background-color: #333;
+        border-radius: 4px;
+        margin-bottom: 1rem;
+        overflow: hidden;
+    }
+    
+    .progress-bar {
+        background-color: #E67E22;
+        border-radius: 4px;
+    }
+    
+    .next-level {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9rem;
+        color: #999;
+    }
+    
+    .points-needed {
+        color: #E67E22;
+    }
+    
+    /* Onglets de transaction */
+    .transaction-tabs {
+        margin-bottom: 1.5rem;
+    }
+    
+    .nav-tabs {
+        border-bottom: 1px solid #333;
+    }
+    
+    .nav-link {
+        color: #999;
+        background-color: transparent;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s;
+    }
+    
+    .nav-link:hover {
+        color: #fff;
+        border-color: #666;
+    }
+    
+    .nav-link.active {
+        color: #E67E22;
+        background-color: transparent;
+        border-color: #E67E22;
+    }
+    
+    /* Tableau des transactions */
+    .transaction-table {
+        color: #ccc;
+        width: 100%;
+    }
+    
+    .transaction-table th {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        color: #999;
+        font-weight: 600;
+        border-bottom: 1px solid #333;
+        padding: 0.75rem;
+    }
+    
+    .transaction-table td {
+        padding: 0.75rem;
+        border-bottom: 1px solid #222;
+        font-size: 0.9rem;
+    }
+    
+    .points-cell {
+        font-weight: 600;
+    }
+    
+    .points-cell.positive {
+        color: #4CAF50;
+    }
+    
+    .points-cell.negative {
+        color: #F44336;
+    }
+    
+    /* État vide */
+    .empty-state {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        text-align: center;
+    }
+    
+    .empty-icon {
+        font-size: 2.5rem;
+        color: #444;
+        margin-bottom: 1rem;
+    }
+    
+    .empty-state p {
+        color: #999;
+        margin-bottom: 1.5rem;
+    }
+    
+    .btn-create-post {
+        background-color: #E67E22;
+        color: #fff;
+        border: none;
+        padding: 0.5rem 1.2rem;
+        border-radius: 5px;
+        font-size: 0.9rem;
+        transition: all 0.3s;
+    }
+    
+    .btn-create-post:hover {
+        background-color: #D35400;
+        color: #fff;
+    }
+    
+    /* Badges */
+    .badges-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .badge-item {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem;
+        background-color: #191919;
+        border-radius: 8px;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    .badge-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    .badge-item.locked {
+        opacity: 0.6;
+        background-color: #171717;
+    }
+    
+    .badge-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 1.2rem;
+    }
+    
+    .badge-icon.commun, .badge-icon.common {
+        background-color: #607D8B;
+    }
+    
+    .badge-icon.rare {
+        background-color: #3F51B5;
+    }
+    
+    .badge-icon.épique, .badge-icon.epic {
+        background-color: #9C27B0;
+    }
+    
+    .badge-icon.légendaire, .badge-icon.legendary {
+        background-color: #FFC107;
+    }
+    
+    .badge-icon.locked {
+        background-color: #333;
+    }
+    
+    .badge-info {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+    
+    .badge-name {
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+    
+    .badge-desc {
+        font-size: 0.8rem;
+        color: #999;
+        margin-top: 0.2rem;
+    }
+    
+    .badge-reward {
+        text-align: right;
+    }
+    
+    .points-reward {
+        font-weight: 600;
+        color: #4CAF50;
+    }
+    
+    .available-badges {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+    
+    /* Publications récentes */
+    .recent-posts {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .post-item {
+        display: flex;
+        gap: 1rem;
+        padding-bottom: 1.5rem;
+        border-bottom: 1px solid #222;
+    }
+    
+    .post-item:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+    
+    .post-image {
+        width: 80px;
+        height: 80px;
+        border-radius: 8px;
+        overflow: hidden;
+        flex-shrink: 0;
+    }
+    
+    .post-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .post-image-placeholder {
+        width: 100%;
+        height: 100%;
+        background-color: #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #666;
+        font-size: 1.5rem;
+    }
+    
+    .post-content {
+        flex: 1;
+    }
+    
+    .post-title {
+        font-size: 1rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .post-excerpt {
+        font-size: 0.9rem;
+        color: #999;
+        margin-bottom: 0.5rem;
+        line-height: 1.4;
+    }
+    
+    .post-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.8rem;
+        color: #777;
+    }
+    
+    .post-interactions {
+        display: flex;
+        gap: 0.75rem;
+    }
+    
+    .post-interactions i {
+        margin-right: 0.25rem;
+    }
+    
+    /* Liens */
+    .badge-link, .posts-link {
+        color: #E67E22;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: all 0.3s;
+    }
+    
+    .badge-link:hover, .posts-link:hover {
+        color: #F39C12;
+        text-decoration: underline;
+    }
+    
+    .edit-link {
+        color: #E67E22;
+        text-decoration: none;
+    }
+    
+    .edit-link:hover {
+        text-decoration: underline;
+    }
+    
+    /* Responsive */
+    @media (max-width: 767px) {
+        .post-item {
+            flex-direction: column;
+        }
+        
+        .post-image {
+            width: 100%;
+            height: 150px;
+        }
+        
+        .level-info {
+            margin-top: 1.5rem;
+        }
+    }
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialisation des tooltips Bootstrap
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
+    document.addEventListener('DOMContentLoaded', function() {
+        // Gestion des onglets
+        const tabs = document.querySelectorAll('.nav-link');
+        const tabContents = document.querySelectorAll('.tab-pane');
+        
+        tabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Désactiver tous les onglets
+                tabs.forEach(t => t.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('show', 'active'));
+                
+                // Activer l'onglet cliqué
+                this.classList.add('active');
+                const target = this.getAttribute('data-bs-target');
+                document.querySelector(target).classList.add('show', 'active');
+            });
+        });
     });
-});
 </script>
 @endsection 

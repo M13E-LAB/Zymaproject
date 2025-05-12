@@ -71,7 +71,7 @@ class User extends Authenticatable
     public function badges()
     {
         return $this->belongsToMany(Badge::class, 'user_badges')
-            ->withTimestamp('earned_at')
+            ->withTimestamps()
             ->withPivot('metadata');
     }
 
@@ -176,14 +176,18 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if user has a specific badge.
+     * Check if the user has a specific badge.
      *
-     * @param string $badgeCode
+     * @param string $badgeSlug
      * @return bool
      */
-    public function hasBadge($badgeCode)
+    public function hasBadge($badgeSlug)
     {
-        // Cette méthode sera implémentée plus tard avec un système de badges
-        return false;
+        // Si le développement est en mode test/demo, on considère que tous les badges sont acquis
+        if (config('app.env') === 'local') {
+            return true;
+        }
+        
+        return $this->badges()->where('slug', $badgeSlug)->exists();
     }
 }

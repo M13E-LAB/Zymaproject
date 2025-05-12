@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Auth;
 
 Route::get('/', [OpenFoodFactsController::class, 'index'])->name('products.search');
 Route::post('/fetch', [OpenFoodFactsController::class, 'fetch'])->name('products.fetch');
+Route::get('/products/search', [OpenFoodFactsController::class, 'searchByName'])->name('products.searchByName');
+Route::get('/api/products/search', [OpenFoodFactsController::class, 'apiSearchByName'])->name('api.products.search');
+Route::get('/products/{id}', [OpenFoodFactsController::class, 'show'])->name('products.show');
 // Route::get('/statistics', [OpenFoodFactsController::class, 'statistics'])->name('statistics');
 
 // Nouvelle route de statistiques
@@ -26,6 +29,7 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::get('/profile/posts', [ProfileController::class, 'posts'])->name('profile.posts');
     Route::get('/profile/points', [ProfileController::class, 'points'])->name('profile.points');
+    Route::get('/profile/badges', [ProfileController::class, 'badges'])->name('profile.badges');
     
     // Routes d'onboarding
     Route::get('/onboarding', [OnboardingController::class, 'index'])->name('onboarding.index');

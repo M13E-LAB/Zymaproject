@@ -1,240 +1,246 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-lg-10">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="page-title">
-                    <i class="fas fa-user-edit"></i> Modifier mon profil
-                </h1>
-                <a href="{{ route('profile.show') }}" class="btn btn-back">
-                    <i class="fas fa-arrow-left me-2"></i> Retour au profil
-                </a>
-            </div>
-            
-            @if ($errors->any())
-            <div class="alert alert-danger mb-4">
-                <h5 class="alert-heading"><i class="fas fa-exclamation-triangle me-2"></i> Des erreurs sont présentes dans le formulaire</h5>
-                <ul class="mb-0 mt-2">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-            @endif
-            
-            <div class="card profile-edit-card">
-                <div class="card-body p-lg-5">
-                    <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
-                        
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="avatar-upload-container">
-                                    <div class="avatar-preview mb-4">
-                                        @if($user->avatar)
-                                            <img id="avatar-preview" src="{{ $user->avatar }}" alt="Avatar" class="avatar-edit">
-                                        @else
-                                            <div id="avatar-preview" class="avatar-placeholder">
-                                                <i class="fas fa-user"></i>
+<div class="profile-container">
+    <div class="container">
+        <!-- En-tête avec navigation de retour -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="section-title">
+                <i class="fas fa-user-edit"></i> Modifier mon profil
+            </h1>
+            <a href="{{ route('profile.show') }}" class="btn btn-back">
+                <i class="fas fa-arrow-left me-2"></i> Retour au profil
+            </a>
+        </div>
+        
+        @if ($errors->any())
+        <div class="alert alert-danger mb-4">
+            <h5 class="alert-heading"><i class="fas fa-exclamation-triangle me-2"></i> Des erreurs sont présentes dans le formulaire</h5>
+            <ul class="mb-0 mt-2">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+        
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card profile-card">
+                    <div class="card-header">
+                        <h3 class="card-title">Informations du profil</h3>
+                    </div>
+                    <div class="card-body">
+                        <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            @method('PATCH')
+                            
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="avatar-upload-container">
+                                        <div class="avatar-preview mb-4">
+                                            @if($user->avatar)
+                                                <img id="avatar-preview" src="{{ $user->avatar }}" alt="Avatar" class="profile-avatar">
+                                            @else
+                                                <div id="avatar-preview" class="profile-avatar-placeholder">
+                                                    <i class="fas fa-user"></i>
+                                                </div>
+                                            @endif
+                                            
+                                            <div class="avatar-overlay">
+                                                <i class="fas fa-camera"></i>
+                                                <span>Changer</span>
+                                            </div>
+                                            
+                                            <input type="file" id="avatar" name="avatar" class="avatar-input" accept="image/*" onchange="previewAvatar(this)">
+                                        </div>
+                                        
+                                        <div class="avatar-tips">
+                                            <h4><i class="fas fa-info-circle me-2"></i> Conseils pour l'avatar</h4>
+                                            <ul>
+                                                <li>Image carrée recommandée</li>
+                                                <li>Format JPG, PNG ou GIF</li>
+                                                <li>Taille maximum: 2 MB</li>
+                                                <li>Dimensions: 400×400 pixels minimum</li>
+                                            </ul>
+                                            
+                                            <div class="form-check mt-3">
+                                                <input class="form-check-input" type="checkbox" id="removeAvatar" name="remove_avatar">
+                                                <label class="form-check-label" for="removeAvatar">
+                                                    Supprimer mon avatar actuel
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="profile-completion">
+                                        <h4>Progression du profil</h4>
+                                        @php
+                                            $completionSteps = [
+                                                'avatar' => $user->avatar ? true : false,
+                                                'name' => $user->name ? true : false,
+                                                'username' => $user->username ? true : false,
+                                                'bio' => $user->bio ? true : false
+                                            ];
+                                            
+                                            $completionCount = count(array_filter($completionSteps));
+                                            $completionPercent = ($completionCount / count($completionSteps)) * 100;
+                                        @endphp
+                                        
+                                        <div class="progress level-progress mb-3">
+                                            <div class="progress-bar" role="progressbar" style="width: {{ $completionPercent }}%;" 
+                                                aria-valuenow="{{ $completionPercent }}" aria-valuemin="0" aria-valuemax="100">
+                                                {{ round($completionPercent) }}%
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="completion-checklist">
+                                            <div class="completion-item {{ $completionSteps['name'] ? 'completed' : '' }}">
+                                                <i class="fas {{ $completionSteps['name'] ? 'fa-check-circle' : 'fa-circle' }}"></i>
+                                                <span>Nom complet</span>
+                                            </div>
+                                            <div class="completion-item {{ $completionSteps['username'] ? 'completed' : '' }}">
+                                                <i class="fas {{ $completionSteps['username'] ? 'fa-check-circle' : 'fa-circle' }}"></i>
+                                                <span>Nom d'utilisateur</span>
+                                            </div>
+                                            <div class="completion-item {{ $completionSteps['bio'] ? 'completed' : '' }}">
+                                                <i class="fas {{ $completionSteps['bio'] ? 'fa-check-circle' : 'fa-circle' }}"></i>
+                                                <span>Bio</span>
+                                            </div>
+                                            <div class="completion-item {{ $completionSteps['avatar'] ? 'completed' : '' }}">
+                                                <i class="fas {{ $completionSteps['avatar'] ? 'fa-check-circle' : 'fa-circle' }}"></i>
+                                                <span>Photo de profil</span>
+                                            </div>
+                                        </div>
+                                        
+                                        @if($completionPercent < 100)
+                                            <div class="completion-bonus">
+                                                <i class="fas fa-star"></i>
+                                                <p>Complétez votre profil à 100% et gagnez <strong>+15 points</strong> !</p>
                                             </div>
                                         @endif
-                                        
-                                        <div class="avatar-overlay">
-                                            <i class="fas fa-camera"></i>
-                                            <span>Changer</span>
-                                        </div>
-                                        
-                                        <input type="file" id="avatar" name="avatar" class="avatar-input" accept="image/*" onchange="previewAvatar(this)">
-                                    </div>
-                                    
-                                    <div class="avatar-tips">
-                                        <h4><i class="fas fa-info-circle me-2"></i> Conseils pour l'avatar</h4>
-                                        <ul>
-                                            <li>Image carrée recommandée</li>
-                                            <li>Format JPG, PNG ou GIF</li>
-                                            <li>Taille maximum: 2 MB</li>
-                                            <li>Dimensions: 400×400 pixels minimum</li>
-                                        </ul>
-                                        
-                                        <div class="form-check mt-3">
-                                            <input class="form-check-input" type="checkbox" id="removeAvatar" name="remove_avatar">
-                                            <label class="form-check-label" for="removeAvatar">
-                                                Supprimer mon avatar actuel
-                                            </label>
-                                        </div>
                                     </div>
                                 </div>
                                 
-                                <div class="profile-completion">
-                                    <h4>Progression du profil</h4>
-                                    @php
-                                        $completionSteps = [
-                                            'avatar' => $user->avatar ? true : false,
-                                            'name' => $user->name ? true : false,
-                                            'username' => $user->username ? true : false,
-                                            'bio' => $user->bio ? true : false
-                                        ];
+                                <div class="col-md-8">
+                                    <div class="form-group mb-4">
+                                        <label for="name" class="form-label">Nom complet <span class="required">*</span></label>
+                                        <input type="text" class="form-control custom-input @error('name') is-invalid @enderror" 
+                                               id="name" name="name" value="{{ old('name', $user->name) }}" required>
+                                        <div class="form-text">Votre nom complet tel qu'il apparaîtra sur votre profil</div>
+                                    </div>
+                                    
+                                    <div class="form-group mb-4">
+                                        <label for="username" class="form-label">Nom d'utilisateur</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text">@</span>
+                                            <input type="text" class="form-control custom-input @error('username') is-invalid @enderror" 
+                                                   id="username" name="username" value="{{ old('username', $user->username) }}">
+                                        </div>
+                                        <div class="form-text">Choisissez un nom d'utilisateur unique (sans espaces ni caractères spéciaux)</div>
+                                    </div>
+                                    
+                                    <div class="form-group mb-4">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control custom-input" id="email" value="{{ $user->email }}" disabled>
+                                        <div class="form-text">Vous ne pouvez pas modifier votre adresse email. Contactez l'administrateur pour tout changement.</div>
+                                    </div>
+                                    
+                                    <div class="form-group mb-4">
+                                        <label for="bio" class="form-label">Biographie</label>
+                                        <textarea class="form-control custom-textarea @error('bio') is-invalid @enderror" 
+                                                  id="bio" name="bio" rows="4">{{ old('bio', $user->bio) }}</textarea>
+                                        <div class="d-flex justify-content-between">
+                                            <div class="form-text">Partagez quelques informations sur vous</div>
+                                            <div class="char-counter"><span id="bioCharCount">0</span>/500</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <h3 class="settings-section-title mt-5">Préférences</h3>
+                                    
+                                    <div class="preferences-section">
+                                        @php
+                                            $preferences = $user->preferences ?? [];
+                                        @endphp
                                         
-                                        $completionCount = count(array_filter($completionSteps));
-                                        $completionPercent = ($completionCount / count($completionSteps)) * 100;
-                                    @endphp
-                                    
-                                    <div class="progress progress-lg mb-3">
-                                        <div class="progress-bar" role="progressbar" style="width: {{ $completionPercent }}%;" 
-                                            aria-valuenow="{{ $completionPercent }}" aria-valuemin="0" aria-valuemax="100">
-                                            {{ round($completionPercent) }}%
+                                        <div class="form-group mb-3">
+                                            <label class="form-label">Notifications</label>
+                                            <div class="preference-toggle-group">
+                                                <div class="preference-toggle">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox" id="pref_email_comments" 
+                                                               name="preferences[email_comments]" 
+                                                               {{ isset($preferences['email_comments']) && $preferences['email_comments'] ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="pref_email_comments">
+                                                            Recevoir des emails pour les commentaires
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="preference-toggle">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox" id="pref_email_points" 
+                                                               name="preferences[email_points]" 
+                                                               {{ isset($preferences['email_points']) && $preferences['email_points'] ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="pref_email_points">
+                                                            Recevoir des emails pour les points gagnés
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="preference-toggle">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox" id="pref_email_badges" 
+                                                               name="preferences[email_badges]" 
+                                                               {{ isset($preferences['email_badges']) && $preferences['email_badges'] ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="pref_email_badges">
+                                                            Recevoir des emails pour les badges
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-group mb-3">
+                                            <label class="form-label">Confidentialité</label>
+                                            <div class="preference-toggle-group">
+                                                <div class="preference-toggle">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox" id="pref_profile_public" 
+                                                               name="preferences[profile_public]" 
+                                                               {{ isset($preferences['profile_public']) && $preferences['profile_public'] ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="pref_profile_public">
+                                                            Profil public
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="preference-toggle">
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input" type="checkbox" id="pref_show_points" 
+                                                               name="preferences[show_points]" 
+                                                               {{ isset($preferences['show_points']) && $preferences['show_points'] ? 'checked' : '' }}>
+                                                        <label class="form-check-label" for="pref_show_points">
+                                                            Afficher mes points publiquement
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                     
-                                    <div class="completion-checklist">
-                                        <div class="completion-item {{ $completionSteps['name'] ? 'completed' : '' }}">
-                                            <i class="fas {{ $completionSteps['name'] ? 'fa-check-circle' : 'fa-circle' }}"></i>
-                                            <span>Nom complet</span>
-                                        </div>
-                                        <div class="completion-item {{ $completionSteps['username'] ? 'completed' : '' }}">
-                                            <i class="fas {{ $completionSteps['username'] ? 'fa-check-circle' : 'fa-circle' }}"></i>
-                                            <span>Nom d'utilisateur</span>
-                                        </div>
-                                        <div class="completion-item {{ $completionSteps['bio'] ? 'completed' : '' }}">
-                                            <i class="fas {{ $completionSteps['bio'] ? 'fa-check-circle' : 'fa-circle' }}"></i>
-                                            <span>Bio</span>
-                                        </div>
-                                        <div class="completion-item {{ $completionSteps['avatar'] ? 'completed' : '' }}">
-                                            <i class="fas {{ $completionSteps['avatar'] ? 'fa-check-circle' : 'fa-circle' }}"></i>
-                                            <span>Photo de profil</span>
-                                        </div>
+                                    <div class="form-actions mt-5">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-save me-2"></i> Enregistrer les modifications
+                                        </button>
+                                        <a href="{{ route('profile.show') }}" class="btn btn-outline-secondary ms-2">
+                                            <i class="fas fa-times me-2"></i> Annuler
+                                        </a>
                                     </div>
-                                    
-                                    @if($completionPercent < 100)
-                                        <div class="completion-bonus">
-                                            <i class="fas fa-star"></i>
-                                            <p>Complétez votre profil à 100% et gagnez <strong>+15 points</strong> !</p>
-                                        </div>
-                                    @endif
                                 </div>
                             </div>
-                            
-                            <div class="col-md-8">
-                                <div class="form-group mb-4">
-                                    <label for="name" class="form-label">Nom complet <span class="required">*</span></label>
-                                    <input type="text" class="form-control custom-input @error('name') is-invalid @enderror" 
-                                           id="name" name="name" value="{{ old('name', $user->name) }}" required>
-                                    <div class="form-text">Votre nom complet tel qu'il apparaîtra sur votre profil</div>
-                                </div>
-                                
-                                <div class="form-group mb-4">
-                                    <label for="username" class="form-label">Nom d'utilisateur</label>
-                                    <div class="input-group">
-                                        <span class="input-group-text">@</span>
-                                        <input type="text" class="form-control custom-input @error('username') is-invalid @enderror" 
-                                               id="username" name="username" value="{{ old('username', $user->username) }}">
-                                    </div>
-                                    <div class="form-text">Choisissez un nom d'utilisateur unique (sans espaces ni caractères spéciaux)</div>
-                                </div>
-                                
-                                <div class="form-group mb-4">
-                                    <label for="email" class="form-label">Email</label>
-                                    <input type="email" class="form-control custom-input" id="email" value="{{ $user->email }}" disabled>
-                                    <div class="form-text">Vous ne pouvez pas modifier votre adresse email. Contactez l'administrateur pour tout changement.</div>
-                                </div>
-                                
-                                <div class="form-group mb-4">
-                                    <label for="bio" class="form-label">Biographie</label>
-                                    <textarea class="form-control custom-textarea @error('bio') is-invalid @enderror" 
-                                              id="bio" name="bio" rows="4">{{ old('bio', $user->bio) }}</textarea>
-                                    <div class="d-flex justify-content-between">
-                                        <div class="form-text">Partagez quelques informations sur vous</div>
-                                        <div class="char-counter"><span id="bioCharCount">0</span>/500</div>
-                                    </div>
-                                </div>
-                                
-                                <h3 class="settings-section-title mt-5">Préférences</h3>
-                                
-                                <div class="preferences-section">
-                                    @php
-                                        $preferences = $user->preferences ?? [];
-                                    @endphp
-                                    
-                                    <div class="form-group mb-3">
-                                        <label class="form-label">Notifications</label>
-                                        <div class="preference-toggle-group">
-                                            <div class="preference-toggle">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" id="pref_email_comments" 
-                                                           name="preferences[email_comments]" 
-                                                           {{ isset($preferences['email_comments']) && $preferences['email_comments'] ? 'checked' : '' }}>
-                                                    <label class="form-check-label" for="pref_email_comments">
-                                                        Recevoir des emails pour les commentaires
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="preference-toggle">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" id="pref_email_points" 
-                                                           name="preferences[email_points]" 
-                                                           {{ isset($preferences['email_points']) && $preferences['email_points'] ? 'checked' : '' }}>
-                                                    <label class="form-check-label" for="pref_email_points">
-                                                        Recevoir des emails pour les points gagnés
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="preference-toggle">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" id="pref_email_badges" 
-                                                           name="preferences[email_badges]" 
-                                                           {{ isset($preferences['email_badges']) && $preferences['email_badges'] ? 'checked' : '' }}>
-                                                    <label class="form-check-label" for="pref_email_badges">
-                                                        Recevoir des emails pour les badges
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="form-group mb-3">
-                                        <label class="form-label">Confidentialité</label>
-                                        <div class="preference-toggle-group">
-                                            <div class="preference-toggle">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" id="pref_profile_public" 
-                                                           name="preferences[profile_public]" 
-                                                           {{ isset($preferences['profile_public']) && $preferences['profile_public'] ? 'checked' : '' }}>
-                                                    <label class="form-check-label" for="pref_profile_public">
-                                                        Profil public
-                                                    </label>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="preference-toggle">
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input" type="checkbox" id="pref_show_points" 
-                                                           name="preferences[show_points]" 
-                                                           {{ isset($preferences['show_points']) && $preferences['show_points'] ? 'checked' : '' }}>
-                                                    <label class="form-check-label" for="pref_show_points">
-                                                        Afficher mes points publiquement
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="form-actions mt-5">
-                                    <button type="submit" class="btn btn-primary btn-lg">
-                                        <i class="fas fa-save me-2"></i> Enregistrer les modifications
-                                    </button>
-                                    <a href="{{ route('profile.show') }}" class="btn btn-outline-secondary btn-lg ms-2">
-                                        <i class="fas fa-times me-2"></i> Annuler
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -242,76 +248,99 @@
 </div>
 
 <style>
-.page-title {
-    font-size: 2rem;
-    font-weight: 800;
-    color: var(--text-primary);
-    display: flex;
-    align-items: center;
+/* Utilisation des styles existants de la page de profil */
+.profile-container {
+    background-color: #000;
+    color: #fff;
+    padding: 2rem 0;
+    min-height: calc(100vh - 70px);
 }
 
-.page-title i {
-    color: var(--accent-primary);
-    margin-right: 1rem;
-    font-size: 1.8rem;
+.section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 0;
+    color: #fff;
+}
+
+.section-title i {
+    color: #E67E22;
+    margin-right: 0.5rem;
 }
 
 .btn-back {
-    background: rgba(255, 255, 255, 0.05);
-    color: var(--text-primary);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
+    background-color: #333;
+    color: #fff;
+    border: none;
     padding: 0.5rem 1.2rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.3s;
 }
 
 .btn-back:hover {
-    background: var(--accent-primary);
-    color: var(--bg-primary);
-    transform: translateX(-5px);
+    background-color: #E67E22;
+    color: #fff;
 }
 
-.profile-edit-card {
-    border: none;
-    border-radius: 24px;
+.profile-card {
+    background-color: #111;
+    border: 1px solid #222;
+    border-radius: 10px;
     overflow: hidden;
-    background: linear-gradient(135deg, var(--bg-tertiary) 0%, var(--bg-secondary) 100%);
-    animation: fadeIn 0.5s ease-out;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
-.avatar-upload-container {
-    margin-bottom: 2rem;
+.card-header {
+    background-color: #191919;
+    border-bottom: 1px solid #333;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
+.card-title {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Avatar */
 .avatar-preview {
     position: relative;
-    width: 200px;
-    height: 200px;
+    width: 160px;
+    height: 160px;
     margin: 0 auto 1.5rem;
-    border-radius: 50%;
     overflow: hidden;
     cursor: pointer;
-    transition: all 0.3s ease;
-    border: 4px solid var(--accent-primary);
-    box-shadow: 0 0 30px rgba(0, 209, 178, 0.3);
 }
 
-.avatar-edit {
-    width: 100%;
-    height: 100%;
+.profile-avatar, .avatar-edit {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
     object-fit: cover;
+    border: 3px solid #E67E22;
 }
 
-.avatar-placeholder {
-    width: 100%;
-    height: 100%;
+.profile-avatar-placeholder {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background-color: #333;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--accent-gradient);
-    font-size: 4rem;
-    color: var(--bg-primary);
+    color: #666;
+    font-size: 2.5rem;
+    border: 3px solid #E67E22;
 }
 
 .avatar-overlay {
@@ -326,8 +355,9 @@
     align-items: center;
     justify-content: center;
     opacity: 0;
-    transition: all 0.3s ease;
+    transition: all 0.3s;
     color: #fff;
+    border-radius: 50%;
 }
 
 .avatar-overlay i {
@@ -351,17 +381,18 @@
 }
 
 .avatar-tips {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 12px;
+    background-color: #1a1a1a;
+    border-radius: 8px;
     padding: 1rem;
     font-size: 0.9rem;
-    color: var(--text-secondary);
+    color: #ccc;
+    margin-bottom: 1.5rem;
 }
 
 .avatar-tips h4 {
     font-size: 1rem;
     font-weight: 600;
-    color: var(--text-primary);
+    color: #E67E22;
     margin-bottom: 0.8rem;
 }
 
@@ -370,25 +401,32 @@
     margin-bottom: 0.8rem;
 }
 
+/* Progression du profil */
 .profile-completion {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 12px;
+    background-color: #1a1a1a;
+    border-radius: 8px;
     padding: 1.5rem;
-    margin-top: 2rem;
+    margin-bottom: 1.5rem;
 }
 
 .profile-completion h4 {
     font-size: 1.1rem;
     font-weight: 600;
-    color: var(--text-primary);
+    color: #E67E22;
     margin-bottom: 1rem;
 }
 
-.progress-lg {
-    height: 1rem;
-    border-radius: 0.5rem;
-    background: rgba(255, 255, 255, 0.1);
-    margin-bottom: 1.5rem;
+.level-progress {
+    height: 8px;
+    background-color: #333;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.progress-bar {
+    background-color: #E67E22;
+    border-radius: 4px;
 }
 
 .completion-checklist {
@@ -399,29 +437,28 @@
     display: flex;
     align-items: center;
     margin-bottom: 0.8rem;
-    color: var(--text-secondary);
-    transition: all 0.3s ease;
+    color: #999;
+    transition: all 0.3s;
 }
 
 .completion-item i {
     margin-right: 0.8rem;
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 .completion-item.completed {
-    color: var(--text-primary);
+    color: #fff;
 }
 
 .completion-item.completed i {
-    color: var(--accent-primary);
+    color: #4CAF50;
 }
 
 .completion-bonus {
-    background: var(--accent-gradient);
+    background: linear-gradient(135deg, #E67E22, #F39C12);
     padding: 1rem;
-    border-radius: 12px;
-    color: var(--bg-primary);
-    margin-top: 1.5rem;
+    border-radius: 8px;
+    color: #fff;
     display: flex;
     align-items: center;
 }
@@ -429,6 +466,7 @@
 .completion-bonus i {
     font-size: 1.5rem;
     margin-right: 1rem;
+    color: #fff;
 }
 
 .completion-bonus p {
@@ -436,8 +474,9 @@
     font-weight: 500;
 }
 
+/* Formulaire */
 .form-label {
-    color: var(--text-primary);
+    color: #fff;
     font-weight: 600;
     margin-bottom: 0.5rem;
 }
@@ -448,52 +487,52 @@
 }
 
 .custom-input, .custom-textarea {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    color: var(--text-primary);
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    color: #fff;
     padding: 0.8rem 1rem;
-    transition: all 0.3s ease;
+    transition: all 0.3s;
 }
 
 .custom-input:focus, .custom-textarea:focus {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 0 0.25rem rgba(0, 209, 178, 0.25);
-    color: var(--text-primary);
+    background-color: #222;
+    border-color: #E67E22;
+    box-shadow: 0 0 0 0.25rem rgba(230, 126, 34, 0.25);
+    color: #fff;
 }
 
 .input-group-text {
-    background: rgba(0, 209, 178, 0.2);
-    border: 1px solid rgba(0, 209, 178, 0.3);
-    color: var(--accent-primary);
-    border-radius: 12px 0 0 12px;
+    background-color: #E67E22;
+    border: none;
+    color: #fff;
+    border-radius: 8px 0 0 8px;
 }
 
 .form-text {
-    color: var(--text-secondary);
+    color: #999;
     font-size: 0.85rem;
     margin-top: 0.5rem;
 }
 
 .char-counter {
-    color: var(--text-secondary);
+    color: #999;
     font-size: 0.85rem;
     margin-top: 0.5rem;
 }
 
 .settings-section-title {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     font-weight: 700;
-    color: var(--text-primary);
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.8rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: #E67E22;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #333;
 }
 
 .preferences-section {
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 12px;
+    background-color: #1a1a1a;
+    border-radius: 8px;
     padding: 1.5rem;
 }
 
@@ -506,20 +545,17 @@
 }
 
 .form-check-input {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.2);
-    width: 2.5rem;
-    height: 1.25rem;
+    background-color: #333;
+    border-color: #555;
 }
 
 .form-check-input:checked {
-    background-color: var(--accent-primary);
-    border-color: var(--accent-primary);
+    background-color: #E67E22;
+    border-color: #E67E22;
 }
 
 .form-check-label {
-    color: var(--text-primary);
-    font-weight: 500;
+    color: #ccc;
 }
 
 .form-actions {
@@ -528,36 +564,40 @@
 }
 
 .btn-primary {
-    background: var(--accent-gradient);
+    background-color: #E67E22;
     border: none;
-    padding: 0.8rem 1.5rem;
+    padding: 0.7rem 1.5rem;
     font-weight: 600;
-    transition: all 0.3s ease;
+    transition: all 0.3s;
+    border-radius: 8px;
 }
 
 .btn-primary:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(0, 209, 178, 0.3);
+    background-color: #D35400;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(230, 126, 34, 0.3);
 }
 
 .btn-outline-secondary {
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: var(--text-primary);
-    padding: 0.8rem 1.5rem;
+    background-color: transparent;
+    border: 1px solid #555;
+    color: #ccc;
+    padding: 0.7rem 1.5rem;
     font-weight: 600;
-    transition: all 0.3s ease;
+    transition: all 0.3s;
+    border-radius: 8px;
 }
 
 .btn-outline-secondary:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: var(--text-primary);
+    background-color: #333;
+    color: #fff;
 }
 
 .alert-danger {
-    background: rgba(255, 87, 87, 0.1);
+    background-color: rgba(255, 87, 87, 0.1);
     border: 1px solid rgba(255, 87, 87, 0.3);
-    border-radius: 12px;
     color: #ff5757;
+    border-radius: 8px;
 }
 
 .alert-danger ul {
@@ -573,6 +613,13 @@
 
 .alert-heading i {
     margin-right: 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 767px) {
+    .level-info {
+        margin-top: 1.5rem;
+    }
 }
 </style>
 
@@ -593,7 +640,7 @@ function previewAvatar(input) {
                 const img = document.createElement('img');
                 img.id = 'avatar-preview';
                 img.src = e.target.result;
-                img.className = 'avatar-edit';
+                img.className = 'profile-avatar';
                 
                 parent.replaceChild(img, placeholder);
             }
@@ -619,7 +666,7 @@ document.querySelector('#removeAvatar').addEventListener('change', function() {
             
             const placeholder = document.createElement('div');
             placeholder.id = 'avatar-preview';
-            placeholder.className = 'avatar-placeholder';
+            placeholder.className = 'profile-avatar-placeholder';
             placeholder.innerHTML = '<i class="fas fa-user"></i>';
             
             parent.replaceChild(placeholder, img);
@@ -646,4 +693,5 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('#bioCharCount').textContent = bioLength;
 });
 </script>
+@endsection 
 @endsection 
