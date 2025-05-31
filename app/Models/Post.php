@@ -66,6 +66,14 @@ class Post extends Model
     }
 
     /**
+     * Get the meal score for the post (if it's a meal post).
+     */
+    public function mealScore()
+    {
+        return $this->hasOne(MealScore::class);
+    }
+
+    /**
      * Calculate the savings amount.
      */
     public function getSavingsAttribute()

@@ -21,7 +21,7 @@ class BadgeSeeder extends Seeder
                 'description' => 'S\'être inscrit sur ZYMA',
                 'icon' => 'user-plus',
                 'points' => 10,
-                'rarity_class' => 'commun',
+                'rarity_class' => 'common',
                 'slug' => 'welcome'
             ],
             [
@@ -29,7 +29,7 @@ class BadgeSeeder extends Seeder
                 'description' => 'Avoir complété son profil à 100%',
                 'icon' => 'id-card',
                 'points' => 20,
-                'rarity_class' => 'commun',
+                'rarity_class' => 'common',
                 'slug' => 'profile_complete'
             ],
             [
@@ -37,7 +37,7 @@ class BadgeSeeder extends Seeder
                 'description' => 'Avoir partagé un premier produit',
                 'icon' => 'share-alt',
                 'points' => 15,
-                'rarity_class' => 'commun',
+                'rarity_class' => 'common',
                 'slug' => 'first_share'
             ],
             [
@@ -53,7 +53,7 @@ class BadgeSeeder extends Seeder
                 'description' => 'Avoir partagé 20 produits',
                 'icon' => 'award',
                 'points' => 100,
-                'rarity_class' => 'épique',
+                'rarity_class' => 'epic',
                 'slug' => 'twenty_shares'
             ],
             [
@@ -61,7 +61,7 @@ class BadgeSeeder extends Seeder
                 'description' => 'Avoir commenté sur un produit',
                 'icon' => 'comment',
                 'points' => 15,
-                'rarity_class' => 'commun',
+                'rarity_class' => 'common',
                 'slug' => 'first_comment'
             ],
             [
@@ -77,7 +77,7 @@ class BadgeSeeder extends Seeder
                 'description' => 'Avoir aimé un produit',
                 'icon' => 'heart',
                 'points' => 5,
-                'rarity_class' => 'commun',
+                'rarity_class' => 'common',
                 'slug' => 'first_like'
             ],
             [
@@ -93,7 +93,7 @@ class BadgeSeeder extends Seeder
                 'description' => 'Avoir atteint le niveau Expert',
                 'icon' => 'user-tie',
                 'points' => 75,
-                'rarity_class' => 'épique',
+                'rarity_class' => 'epic',
                 'slug' => 'level_expert'
             ],
             [
@@ -101,7 +101,7 @@ class BadgeSeeder extends Seeder
                 'description' => 'Avoir atteint le niveau Maître',
                 'icon' => 'crown',
                 'points' => 150,
-                'rarity_class' => 'légendaire',
+                'rarity_class' => 'legendary',
                 'slug' => 'level_maitre'
             ]
         ];

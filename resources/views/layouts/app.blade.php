@@ -24,6 +24,14 @@
             --purple-light: #9B82F7;
             --purple-dark: #7253F6;
             --purple-gradient: linear-gradient(135deg, var(--purple-light), var(--purple-dark));
+            --btn-bg-primary: rgba(15, 15, 15, 0.95);
+            --btn-border-orange: #E67E22;
+            --btn-text-white: #ffffff;
+            --btn-radius: 50px;
+            --btn-padding: 14px 28px;
+            --btn-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --btn-shadow: 0 4px 16px rgba(230, 126, 34, 0.15);
+            --btn-shadow-hover: 0 8px 32px rgba(230, 126, 34, 0.25);
         }
 
         body {
@@ -35,16 +43,24 @@
         }
 
         .navbar {
-            background-color: var(--bg-primary);
+            background: rgba(15, 15, 15, 0.95) !important;
             padding: 1.2rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 2px solid var(--btn-border-orange);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 16px rgba(230, 126, 34, 0.15);
         }
 
         .navbar-brand {
             font-size: 2.5rem;
             font-weight: 800;
-            color: var(--text-primary) !important;
+            color: var(--btn-text-white) !important;
             letter-spacing: -0.5px;
+            transition: var(--btn-transition);
+        }
+
+        .navbar-brand:hover {
+            color: var(--btn-border-orange) !important;
+            transform: scale(1.05);
         }
 
         .nav-container {
@@ -59,25 +75,36 @@
 
         .nav-links {
             display: flex;
-            gap: 1rem;
+            gap: 0.5rem;
             margin: 0 auto;
             align-items: center;
         }
 
         .nav-link {
-            color: var(--text-primary) !important;
-            font-weight: 500;
-            text-decoration: none;
-            padding: 0.6rem 1rem;
-            border-radius: var(--button-radius);
-            transition: all 0.3s ease;
-            background: transparent;
-            white-space: nowrap;
+            background: rgba(30, 30, 30, 0.8) !important;
+            border: 2px solid rgba(255, 255, 255, 0.2) !important;
+            color: var(--btn-text-white) !important;
+            font-weight: 600 !important;
+            text-decoration: none !important;
+            padding: 12px 24px !important;
+            border-radius: var(--btn-radius) !important;
+            transition: var(--btn-transition) !important;
+            white-space: nowrap !important;
+            font-size: 0.95rem !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 8px !important;
+            min-height: 44px !important;
+            backdrop-filter: blur(10px) !important;
         }
 
         .nav-link:hover {
-            background: var(--card-bg);
-            transform: translateY(-2px);
+            background: var(--btn-bg-primary) !important;
+            border-color: var(--btn-border-orange) !important;
+            color: var(--btn-text-white) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: var(--btn-shadow) !important;
         }
 
         .nav-link i {
@@ -89,56 +116,46 @@
             height: 32px;
             border-radius: 50%;
             object-fit: cover;
+            border: 2px solid var(--btn-border-orange);
         }
         
         .dropdown-menu {
-            background-color: var(--bg-secondary);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(15, 15, 15, 0.95) !important;
+            border: 2px solid var(--btn-border-orange) !important;
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 32px rgba(230, 126, 34, 0.3);
+            backdrop-filter: blur(10px);
         }
         
         .dropdown-item {
-            color: var(--text-primary);
+            color: var(--btn-text-white) !important;
             padding: 0.8rem 1.5rem;
-            transition: all 0.2s ease;
+            transition: var(--btn-transition);
             font-weight: 500;
+            background: transparent !important;
         }
         
         .dropdown-item:hover {
-            background-color: var(--bg-tertiary);
+            background: rgba(230, 126, 34, 0.15) !important;
+            color: var(--btn-border-orange) !important;
         }
         
         .dropdown-divider {
-            border-color: rgba(255, 255, 255, 0.1);
-        }
-        
-        .btn-outline-light {
-            border: 2px solid rgba(255, 255, 255, 0.9);
-            color: var(--text-primary);
-            transition: all 0.3s ease;
-            border-radius: var(--button-radius);
-            padding: var(--button-padding);
-            font-weight: 600;
-            background-color: rgba(0, 0, 0, 0.8);
-        }
-        
-        .btn-outline-light:hover {
-            background-color: rgba(0, 0, 0, 0.9);
-            border-color: rgba(255, 255, 255, 1);
-            color: var(--text-primary);
+            border-color: var(--btn-border-orange);
+            opacity: 0.3;
         }
         
         .user-points {
-            background-color: #000;
-            color: var(--text-primary);
+            background: var(--btn-bg-primary);
+            color: var(--btn-text-white);
             font-weight: bold;
-            padding: 2px 8px;
-            border-radius: 10px;
+            padding: 4px 12px;
+            border-radius: 20px;
             font-size: 0.8rem;
             margin-left: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.5);
+            border: 2px solid var(--btn-border-orange);
+            backdrop-filter: blur(10px);
         }
 
         .card {
@@ -366,30 +383,37 @@
             letter-spacing: -0.5px;
         }
         
-        /* Barre de recherche de produits */
+        /* Barre de recherche modernisée */
         .search-product-form {
             position: relative;
             margin: 0 0.5rem;
         }
         
         .search-product-input {
-            background-color: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: var(--button-radius);
-            color: var(--text-primary);
-            height: var(--search-height);
-            padding: 0 1rem 0 2.5rem;
-            width: 220px;
-            transition: all 0.3s ease;
-            font-size: 0.9rem;
+            background: rgba(30, 30, 30, 0.8) !important;
+            border: 2px solid rgba(255, 255, 255, 0.2) !important;
+            border-radius: var(--btn-radius) !important;
+            color: var(--btn-text-white) !important;
+            height: 44px !important;
+            padding: 0 1rem 0 2.5rem !important;
+            width: 220px !important;
+            transition: var(--btn-transition) !important;
+            font-size: 0.9rem !important;
+            font-weight: 500 !important;
+            backdrop-filter: blur(10px) !important;
         }
         
         .search-product-input:focus {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.2);
-            width: 300px;
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(114, 83, 246, 0.2);
+            background: var(--btn-bg-primary) !important;
+            border-color: var(--btn-border-orange) !important;
+            width: 300px !important;
+            outline: none !important;
+            box-shadow: var(--btn-shadow) !important;
+            color: var(--btn-text-white) !important;
+        }
+
+        .search-product-input::placeholder {
+            color: rgba(255, 255, 255, 0.6) !important;
         }
         
         .search-product-icon {
@@ -397,15 +421,9 @@
             left: 0.8rem;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--text-secondary);
+            color: var(--btn-border-orange);
             pointer-events: none;
-        }
-        
-        .search-product-form button {
-            position: absolute;
-            right: 0;
-            top: 0;
-            height: var(--search-height);
+            font-size: 1.1rem;
         }
         
         .autocomplete-results {
@@ -414,28 +432,247 @@
             left: 0;
             right: 0;
             margin-top: 0.5rem;
-            background-color: var(--bg-secondary);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(15, 15, 15, 0.95);
+            border: 2px solid var(--btn-border-orange);
             border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 32px rgba(230, 126, 34, 0.3);
             z-index: 1000;
             max-height: 300px;
             overflow-y: auto;
             display: none;
+            backdrop-filter: blur(10px);
         }
         
         .autocomplete-item {
             padding: 0.8rem 1rem;
             cursor: pointer;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(230, 126, 34, 0.2);
+            color: var(--btn-text-white);
+            transition: var(--btn-transition);
         }
         
         .autocomplete-item:hover {
-            background-color: var(--bg-tertiary);
+            background: rgba(230, 126, 34, 0.15);
+            color: var(--btn-border-orange);
         }
         
         .autocomplete-item:last-child {
             border-bottom: none;
+        }
+
+        /* Boutons primaires - Style uniforme moderne */
+        .btn-primary, 
+        .btn,
+        button[type="submit"],
+        .btn-scan,
+        .btn-contribute,
+        .search-tab,
+        .btn-purple {
+            background: var(--btn-bg-primary) !important;
+            border: 2px solid var(--btn-border-orange) !important;
+            color: var(--btn-text-white) !important;
+            font-weight: 600 !important;
+            padding: var(--btn-padding) !important;
+            border-radius: var(--btn-radius) !important;
+            font-size: 0.95rem !important;
+            transition: var(--btn-transition) !important;
+            letter-spacing: 0.3px !important;
+            text-decoration: none !important;
+            cursor: pointer !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 8px !important;
+            min-height: 48px !important;
+            position: relative !important;
+            overflow: hidden !important;
+            backdrop-filter: blur(10px) !important;
+            box-shadow: var(--btn-shadow) !important;
+        }
+
+        /* Effets hover pour tous les boutons */
+        .btn-primary:hover, 
+        .btn:hover,
+        button[type="submit"]:hover,
+        .btn-scan:hover,
+        .btn-contribute:hover,
+        .search-tab:hover,
+        .btn-purple:hover {
+            background: rgba(25, 25, 25, 0.98) !important;
+            border-color: #F39C12 !important;
+            color: var(--btn-text-white) !important;
+            transform: translateY(-3px) scale(1.02) !important;
+            box-shadow: var(--btn-shadow-hover) !important;
+        }
+
+        /* État actif des boutons */
+        .btn-primary.active,
+        .search-tab.active,
+        .btn-filter.active {
+            background: rgba(230, 126, 34, 0.15) !important;
+            border-color: #E67E22 !important;
+            color: #E67E22 !important;
+            box-shadow: inset 0 2px 8px rgba(230, 126, 34, 0.2) !important;
+        }
+
+        /* Boutons secondaires */
+        .btn-secondary,
+        .btn-outline-light,
+        .btn-outline-primary,
+        .btn-outline-secondary,
+        .btn-back {
+            background: rgba(30, 30, 30, 0.8) !important;
+            border: 1px solid rgba(255, 255, 255, 0.3) !important;
+            color: var(--btn-text-white) !important;
+            font-weight: 600 !important;
+            padding: var(--btn-padding) !important;
+            border-radius: var(--btn-radius) !important;
+            font-size: 0.95rem !important;
+            transition: var(--btn-transition) !important;
+            backdrop-filter: blur(10px) !important;
+            min-height: 48px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 8px !important;
+        }
+
+        .btn-secondary:hover,
+        .btn-outline-light:hover,
+        .btn-outline-primary:hover,
+        .btn-outline-secondary:hover,
+        .btn-back:hover {
+            background: var(--btn-bg-primary) !important;
+            border-color: var(--btn-border-orange) !important;
+            color: var(--btn-text-white) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: var(--btn-shadow) !important;
+        }
+
+        /* Boutons d'action spéciaux */
+        .btn-icon {
+            width: 48px !important;
+            height: 48px !important;
+            background: var(--btn-bg-primary) !important;
+            border: 1px solid var(--btn-border-orange) !important;
+            color: var(--btn-text-white) !important;
+            border-radius: 50% !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            transition: var(--btn-transition) !important;
+            backdrop-filter: blur(10px) !important;
+        }
+
+        .btn-icon:hover {
+            background: rgba(230, 126, 34, 0.2) !important;
+            border-color: #F39C12 !important;
+            transform: translateY(-2px) scale(1.1) !important;
+            box-shadow: 0 6px 20px rgba(230, 126, 34, 0.3) !important;
+        }
+
+        /* Boutons de filtre */
+        .btn-filter {
+            background: var(--btn-bg-primary) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            color: var(--btn-text-white) !important;
+            padding: 10px 20px !important;
+            transition: var(--btn-transition) !important;
+            font-weight: 500 !important;
+            font-size: 0.9rem !important;
+        }
+
+        .btn-filter:hover {
+            background: rgba(230, 126, 34, 0.1) !important;
+            border-color: var(--btn-border-orange) !important;
+            color: var(--btn-border-orange) !important;
+        }
+
+        /* Boutons de connexion/inscription */
+        .btn-connexion {
+            background: var(--btn-bg-primary) !important;
+            border: 2px solid var(--btn-border-orange) !important;
+            color: var(--btn-text-white) !important;
+            padding: 12px 24px !important;
+            border-radius: var(--btn-radius) !important;
+            font-weight: 600 !important;
+            transition: var(--btn-transition) !important;
+            text-decoration: none !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            backdrop-filter: blur(10px) !important;
+        }
+
+        .btn-connexion:hover {
+            background: rgba(230, 126, 34, 0.15) !important;
+            color: var(--btn-border-orange) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: var(--btn-shadow) !important;
+        }
+
+        /* Styles pour les boutons outline spéciaux */
+        .btn-outline {
+            background: transparent !important;
+            border: 2px solid rgba(255, 255, 255, 0.3) !important;
+            color: var(--btn-text-white) !important;
+            font-weight: 600 !important;
+            padding: var(--btn-padding) !important;
+            border-radius: var(--btn-radius) !important;
+            transition: var(--btn-transition) !important;
+            backdrop-filter: blur(10px) !important;
+            min-height: 48px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 8px !important;
+        }
+
+        .btn-outline:hover {
+            background: var(--btn-bg-primary) !important;
+            border-color: var(--btn-border-orange) !important;
+            color: var(--btn-text-white) !important;
+            transform: translateY(-2px) !important;
+            box-shadow: var(--btn-shadow) !important;
+        }
+
+        /* Animations pour tous les boutons */
+        @keyframes buttonPulse {
+            0% { box-shadow: 0 0 0 0 rgba(230, 126, 34, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(230, 126, 34, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(230, 126, 34, 0); }
+        }
+
+        /* Focus states pour accessibilité */
+        .btn-primary:focus,
+        .btn:focus,
+        button:focus,
+        .btn-secondary:focus {
+            outline: none !important;
+            box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.3) !important;
+            animation: buttonPulse 1.5s infinite !important;
+        }
+
+        /* États disabled */
+        .btn-primary:disabled,
+        .btn:disabled,
+        button:disabled {
+            background: rgba(50, 50, 50, 0.5) !important;
+            border-color: rgba(100, 100, 100, 0.3) !important;
+            color: rgba(255, 255, 255, 0.4) !important;
+            cursor: not-allowed !important;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .btn-primary, 
+            .btn,
+            button[type="submit"] {
+                padding: 12px 20px !important;
+                font-size: 0.9rem !important;
+            }
         }
     </style>
 </head>
@@ -457,11 +694,12 @@
                     <div class="autocomplete-results" id="autocompleteResults"></div>
                 </form>
                 
-                <a href="{{ route('statistics') }}" class="nav-link">
-                    <i class="fas fa-chart-bar"></i> Statistiques
-                </a>
                 <a href="{{ route('social.feed') }}" class="nav-link">
                     <i class="fas fa-stream"></i> Communauté
+                </a>
+                
+                <a href="{{ route('leagues.index') }}" class="nav-link">
+                    <i class="fas fa-trophy"></i> Ligues
                 </a>
             </div>
             
@@ -481,6 +719,7 @@
                             <li><a class="dropdown-item" href="{{ route('profile.show') }}"><i class="fas fa-user-circle me-2"></i> Mon profil</a></li>
                             <li><a class="dropdown-item" href="{{ route('profile.posts') }}"><i class="fas fa-share-alt me-2"></i> Mes partages</a></li>
                             <li><a class="dropdown-item" href="{{ route('profile.points') }}"><i class="fas fa-star me-2"></i> Mes points</a></li>
+                            <li><a class="dropdown-item" href="{{ route('profile.badges') }}"><i class="fas fa-award me-2"></i> Mes badges</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form action="{{ route('logout') }}" method="POST">

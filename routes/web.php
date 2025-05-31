@@ -40,8 +40,24 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/social/create', [SocialFeedController::class, 'create'])->name('social.create');
     Route::post('/social', [SocialFeedController::class, 'store'])->name('social.store');
     Route::get('/social/{post}', [SocialFeedController::class, 'show'])->name('social.show');
+    Route::get('/social/{post}/edit', [SocialFeedController::class, 'edit'])->name('social.edit');
+    Route::patch('/social/{post}', [SocialFeedController::class, 'update'])->name('social.update');
+    Route::delete('/social/{post}', [SocialFeedController::class, 'destroy'])->name('social.destroy');
     Route::post('/social/{post}/like', [SocialFeedController::class, 'like'])->name('social.like');
     Route::post('/social/{post}/comment', [SocialFeedController::class, 'comment'])->name('social.comment');
+    // Les repas sont automatiquement analysés par l'IA lors de l'upload
+    // Routes pour les ligues
+    Route::get('/leagues', [App\Http\Controllers\LeagueController::class, 'index'])->name('leagues.index');
+    Route::get('/leagues/create', [App\Http\Controllers\LeagueController::class, 'create'])->name('leagues.create');
+    Route::post('/leagues', [App\Http\Controllers\LeagueController::class, 'store'])->name('leagues.store');
+    Route::get('/leagues/meal-upload', [App\Http\Controllers\LeagueController::class, 'mealUpload'])->name('leagues.meal.upload');
+    Route::post('/leagues/meal-store', [App\Http\Controllers\LeagueController::class, 'mealStore'])->name('leagues.meal.store');
+    Route::get('/leagues/{slug}', [App\Http\Controllers\LeagueController::class, 'show'])->name('leagues.show');
+    Route::post('/leagues/join', [App\Http\Controllers\LeagueController::class, 'join'])->name('leagues.join');
+    Route::delete('/leagues/{slug}/leave', [App\Http\Controllers\LeagueController::class, 'leave'])->name('leagues.leave');
+    Route::patch('/leagues/{slug}/members/{userId}', [App\Http\Controllers\LeagueController::class, 'updateMemberRole'])->name('leagues.updateMemberRole');
+    Route::delete('/leagues/{slug}/members/{userId}', [App\Http\Controllers\LeagueController::class, 'removeMember'])->name('leagues.removeMember');
+    Route::get('/leaderboard', [App\Http\Controllers\LeagueController::class, 'globalLeaderboard'])->name('leaderboard.global');
 });
 
 // Routes d'authentification (login, register, password reset, etc.)

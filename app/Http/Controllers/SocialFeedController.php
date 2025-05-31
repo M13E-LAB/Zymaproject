@@ -92,8 +92,14 @@ class SocialFeedController extends Controller
         // Attribution de points pour la publication
         PointTransaction::awardPoints(Auth::id(), 'post_created', 'Publication dans le feed social');
         
+        // Analyse IA automatique pour les repas
+        if ($post->post_type === 'meal') {
+            $mealScoreController = new \App\Http\Controllers\MealScoreController();
+            $mealScoreController->autoAnalyzeMeal($post);
+        }
+        
         return redirect()->route('social.feed')
-            ->with('success', 'Votre publication a été partagée avec succès !');
+            ->with('success', $post->post_type === 'meal' ? 'Votre repas a été partagé et analysé par notre IA ! 📸🍽️🤖' : 'Votre publication a été partagée avec succès !');
     }
 
     /**
@@ -101,7 +107,7 @@ class SocialFeedController extends Controller
      */
     public function show(Post $post)
     {
-        $post->load(['user', 'comments.user']);
+        $post->load(['user', 'comments.user', 'mealScore']);
         return view('social.show', compact('post'));
     }
 

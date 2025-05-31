@@ -693,5 +693,4 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelector('#bioCharCount').textContent = bioLength;
 });
 </script>
-@endsection 
-@endsection 
+@endsection

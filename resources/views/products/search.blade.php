@@ -6,11 +6,10 @@
     <nav class="zyma-nav">
         <div class="logo-container">
             <h1 class="zyma-logo">ZYMA</h1>
-            <div class="tagline">manger bien, payer moins</div>
+            <div class="tagline">La communauté des mangeurs malins</div>
         </div>
         <div class="nav-links">
             <a href="{{ route('products.search') }}" class="nav-link">Découvrir</a>
-            <a href="{{ route('statistics') }}" class="nav-link">Statistiques</a>
             <a href="{{ route('social.feed') }}" class="nav-link">Communauté</a>
             @if(auth()->check())
                 <a href="{{ route('profile.show') }}" class="nav-link">Mon Profil</a>
@@ -25,8 +24,7 @@
         <div class="hero-content">
             <h1 class="hero-title">Mangez mieux.<br>Dépensez moins.</h1>
             <p class="hero-subtitle">
-                L'application qui compare les prix des produits alimentaires<br>
-                et vous propose des alternatives plus saines et économiques.
+                Scannez, comparez, échangez, et grimpez dans les ligues du mieux-manger.
             </p>
             
             <div class="search-container">
@@ -187,7 +185,7 @@ body, html {
     min-height: 100vh;
 }
 
-/* Navigation */
+/* Navigation modernisée */
 .zyma-nav {
     display: flex;
     justify-content: space-between;
@@ -198,9 +196,10 @@ body, html {
     left: 0;
     right: 0;
     z-index: 1000;
+    background: rgba(15, 15, 15, 0.95) !important;
+    border-bottom: 2px solid var(--accent-primary);
     backdrop-filter: blur(10px);
-    background: rgba(0, 0, 0, 0.7);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 4px 16px rgba(230, 126, 34, 0.15);
 }
 
 .logo-container {
@@ -217,6 +216,11 @@ body, html {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     letter-spacing: -1px;
+    transition: all 0.3s ease;
+}
+
+.zyma-logo:hover {
+    transform: scale(1.05);
 }
 
 .tagline {
@@ -229,36 +233,57 @@ body, html {
 
 .nav-links {
     display: flex;
-    gap: 1.5rem;
+    gap: 0.5rem;
     align-items: center;
 }
 
 .nav-link {
-    color: var(--text-secondary);
-    text-decoration: none;
-    font-size: 0.95rem;
-    font-weight: 500;
-    transition: var(--transition-smooth);
+    background: rgba(30, 30, 30, 0.8) !important;
+    border: 2px solid rgba(255, 255, 255, 0.2) !important;
+    color: var(--text-primary) !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    padding: 12px 24px !important;
+    border-radius: 50px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    font-size: 0.95rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    min-height: 44px !important;
+    backdrop-filter: blur(10px) !important;
 }
 
 .nav-link:hover {
-    color: var(--text-primary);
+    background: rgba(15, 15, 15, 0.95) !important;
+    border-color: var(--accent-primary) !important;
+    color: var(--text-primary) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 16px rgba(230, 126, 34, 0.15) !important;
 }
 
 .btn-connexion {
-    background-color: rgba(230, 126, 34, 0.15);
-    color: var(--accent-primary);
-    border: 1px solid rgba(230, 126, 34, 0.3);
-    padding: 0.6rem 1.2rem;
-    border-radius: var(--radius-sm);
-    font-weight: 500;
-    cursor: pointer;
-    transition: var(--transition-smooth);
+    background: rgba(15, 15, 15, 0.95) !important;
+    border: 2px solid var(--accent-primary) !important;
+    color: var(--text-primary) !important;
+    padding: 12px 24px !important;
+    border-radius: 50px !important;
+    font-weight: 600 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    text-decoration: none !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: 0 4px 16px rgba(230, 126, 34, 0.15) !important;
 }
 
 .btn-connexion:hover {
-    background-color: rgba(230, 126, 34, 0.25);
-    transform: translateY(-2px);
+    background: rgba(25, 25, 25, 0.98) !important;
+    color: var(--accent-primary) !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 32px rgba(230, 126, 34, 0.25) !important;
 }
 
 /* Section héro */
@@ -382,42 +407,55 @@ body, html {
 }
 
 .btn-primary {
-    background: var(--gradient-primary);
-    color: white;
-    border: none;
-    padding: 1rem 1.5rem;
-    border-radius: var(--radius-md);
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition-smooth);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 1rem;
+    background: rgba(15, 15, 15, 0.95) !important;
+    border: 2px solid #E67E22 !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    padding: 14px 28px !important;
+    border-radius: 50px !important;
+    font-size: 0.95rem !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    letter-spacing: 0.3px !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
+    min-height: 48px !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: 0 4px 16px rgba(230, 126, 34, 0.15) !important;
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(230, 126, 34, 0.3);
+    background: rgba(25, 25, 25, 0.98) !important;
+    border-color: #F39C12 !important;
+    color: #ffffff !important;
+    transform: translateY(-3px) scale(1.02) !important;
+    box-shadow: 0 8px 32px rgba(230, 126, 34, 0.25) !important;
 }
 
 .btn-outline {
-    background: transparent;
-    color: var(--text-primary);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 1rem 1.5rem;
-    border-radius: var(--radius-md);
-    font-weight: 500;
-    cursor: pointer;
-    transition: var(--transition-smooth);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    background: transparent !important;
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    padding: 14px 28px !important;
+    border-radius: 50px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    backdrop-filter: blur(10px) !important;
+    min-height: 48px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 8px !important;
 }
 
 .btn-outline:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.3);
+    background: rgba(15, 15, 15, 0.95) !important;
+    border-color: #E67E22 !important;
+    color: #ffffff !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 16px rgba(230, 126, 34, 0.15) !important;
 }
 
 .camera-preview {

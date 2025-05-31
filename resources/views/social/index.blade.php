@@ -197,18 +197,25 @@
 
 /* Boutons */
 .btn-primary {
-    background-color: #E67E22;
-    border: none;
-    padding: 0.7rem 1.5rem;
-    font-weight: 600;
-    transition: all 0.3s;
-    border-radius: 8px;
+    background: rgba(15, 15, 15, 0.95) !important;
+    border: 2px solid #E67E22 !important;
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    padding: 14px 28px !important;
+    border-radius: 50px !important;
+    font-size: 0.95rem !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    letter-spacing: 0.3px !important;
+    backdrop-filter: blur(10px) !important;
+    box-shadow: 0 4px 16px rgba(230, 126, 34, 0.15) !important;
 }
 
 .btn-primary:hover {
-    background-color: #D35400;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(230, 126, 34, 0.3);
+    background: rgba(25, 25, 25, 0.98) !important;
+    border-color: #F39C12 !important;
+    color: #ffffff !important;
+    transform: translateY(-3px) scale(1.02) !important;
+    box-shadow: 0 8px 32px rgba(230, 126, 34, 0.25) !important;
 }
 
 /* Filtres */
@@ -219,24 +226,31 @@
 }
 
 .filter-btn {
-    background-color: #1a1a1a;
-    border: 1px solid #333;
-    color: #ccc;
-    padding: 0.6rem 1rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    transition: all 0.3s;
+    background: rgba(30, 30, 30, 0.8) !important;
+    border: 2px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    padding: 12px 20px !important;
+    border-radius: 50px !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    backdrop-filter: blur(10px) !important;
+    cursor: pointer !important;
 }
 
 .filter-btn:hover {
-    background-color: #222;
-    color: #fff;
+    background: rgba(15, 15, 15, 0.95) !important;
+    border-color: #E67E22 !important;
+    color: #ffffff !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 16px rgba(230, 126, 34, 0.15) !important;
 }
 
 .filter-btn.active {
-    background-color: #E67E22;
-    border-color: #E67E22;
-    color: #fff;
+    background: rgba(230, 126, 34, 0.15) !important;
+    border-color: #E67E22 !important;
+    color: #E67E22 !important;
+    box-shadow: inset 0 2px 8px rgba(230, 126, 34, 0.2) !important;
 }
 
 /* Images des posts */
@@ -268,8 +282,8 @@
     position: absolute;
     top: 10px;
     left: 10px;
-    background-color: #E67E22;
-    color: #fff;
+    background-color: #fff;
+    color: #000;
     padding: 0.3rem 0.8rem;
     border-radius: 20px;
     font-size: 0.8rem;
@@ -289,7 +303,7 @@
     border-radius: 50%;
     object-fit: cover;
     margin-right: 0.8rem;
-    border: 2px solid #E67E22;
+    border: 2px solid #fff;
 }
 
 .author-avatar-placeholder {
@@ -302,7 +316,7 @@
     justify-content: center;
     margin-right: 0.8rem;
     color: #666;
-    border: 2px solid #E67E22;
+    border: 2px solid #fff;
 }
 
 .author-name {
@@ -337,7 +351,7 @@
 .current-price {
     font-size: 1.5rem;
     font-weight: 700;
-    color: #4CAF50;
+    color: #fff;
     margin-right: 0.8rem;
 }
 
@@ -365,18 +379,24 @@
 }
 
 .btn-action {
-    background-color: #1a1a1a;
-    border: 1px solid #333;
-    color: #ccc;
-    padding: 0.4rem 0.8rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    transition: all 0.3s;
+    background: rgba(30, 30, 30, 0.8) !important;
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    color: #ffffff !important;
+    padding: 8px 16px !important;
+    border-radius: 25px !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    backdrop-filter: blur(10px) !important;
+    cursor: pointer !important;
 }
 
 .btn-action:hover {
-    background-color: #222;
-    color: #fff;
+    background: rgba(15, 15, 15, 0.95) !important;
+    border-color: #E67E22 !important;
+    color: #ffffff !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 16px rgba(230, 126, 34, 0.15) !important;
 }
 
 .btn-action .liked {
@@ -384,18 +404,24 @@
 }
 
 .btn-view {
-    background-color: transparent;
-    border: 1px solid #E67E22;
-    color: #E67E22;
-    padding: 0.4rem 0.8rem;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    transition: all 0.3s;
+    background: rgba(15, 15, 15, 0.95) !important;
+    border: 2px solid #E67E22 !important;
+    color: #ffffff !important;
+    padding: 8px 16px !important;
+    border-radius: 25px !important;
+    font-size: 0.9rem !important;
+    font-weight: 600 !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    backdrop-filter: blur(10px) !important;
+    text-decoration: none !important;
 }
 
 .btn-view:hover {
-    background-color: #E67E22;
-    color: #fff;
+    background: rgba(25, 25, 25, 0.98) !important;
+    border-color: #F39C12 !important;
+    color: #ffffff !important;
+    transform: translateY(-2px) scale(1.02) !important;
+    box-shadow: 0 4px 16px rgba(230, 126, 34, 0.15) !important;
 }
 
 /* État vide */
@@ -410,7 +436,7 @@
 
 .empty-icon {
     font-size: 3rem;
-    color: #E67E22;
+    color: #fff;
     margin-bottom: 1.5rem;
 }
 
@@ -440,12 +466,13 @@
 }
 
 .page-item.active .page-link {
-    background-color: #E67E22;
-    border-color: #E67E22;
+    background-color: #fff;
+    border-color: #fff;
+    color: #000;
 }
 
 .page-link {
-    color: #E67E22;
+    color: #fff;
     background-color: #1a1a1a;
     border-color: #333;
 }
