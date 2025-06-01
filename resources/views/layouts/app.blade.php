@@ -120,42 +120,163 @@
         }
         
         .dropdown-menu {
-            background: rgba(15, 15, 15, 0.95) !important;
-            border: 2px solid var(--btn-border-orange) !important;
-            border-radius: 16px;
+            background: rgba(15, 15, 15, 0.98) !important;
+            border: 3px solid var(--btn-border-orange) !important;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 8px 32px rgba(230, 126, 34, 0.3);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 60px rgba(230, 126, 34, 0.4), 
+                        0 8px 32px rgba(0, 0, 0, 0.8),
+                        inset 0 0 0 1px rgba(230, 126, 34, 0.1);
+            backdrop-filter: blur(20px);
+            transform: translateY(-10px);
+            animation: dropdownSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            min-width: 250px;
+            padding: 0.5rem 0;
+        }
+        
+        @keyframes dropdownSlideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-20px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
         
         .dropdown-item {
             color: var(--btn-text-white) !important;
-            padding: 0.8rem 1.5rem;
-            transition: var(--btn-transition);
-            font-weight: 500;
+            padding: 1rem 1.5rem;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-weight: 600;
             background: transparent !important;
+            border-left: 4px solid transparent;
+            font-size: 0.95rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dropdown-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(230, 126, 34, 0.1), transparent);
+            transition: left 0.5s ease;
         }
         
         .dropdown-item:hover {
-            background: rgba(230, 126, 34, 0.15) !important;
+            background: linear-gradient(135deg, rgba(230, 126, 34, 0.2), rgba(230, 126, 34, 0.1)) !important;
             color: var(--btn-border-orange) !important;
+            border-left-color: var(--btn-border-orange);
+            transform: translateX(8px);
+            box-shadow: inset 0 0 20px rgba(230, 126, 34, 0.1);
+        }
+        
+        .dropdown-item:hover::before {
+            left: 100%;
+        }
+        
+        .dropdown-item i {
+            color: var(--btn-border-orange);
+            font-size: 1.1rem;
+            width: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown-item:hover i {
+            transform: scale(1.2) rotate(5deg);
         }
         
         .dropdown-divider {
             border-color: var(--btn-border-orange);
-            opacity: 0.3;
+            opacity: 0.5;
+            margin: 0.5rem 1rem;
+            border-width: 1px;
+        }
+        
+        /* Animation du toggle button */
+        .dropdown-toggle {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease !important;
+            background: linear-gradient(135deg, rgba(230, 126, 34, 0.05), rgba(230, 126, 34, 0.1)) !important;
+            border: 2px solid rgba(230, 126, 34, 0.3) !important;
+            border-radius: 25px !important;
+            animation: userButtonGlow 3s ease-in-out infinite !important;
+        }
+        
+        @keyframes userButtonGlow {
+            0%, 100% {
+                border-color: rgba(230, 126, 34, 0.3);
+                box-shadow: 0 0 10px rgba(230, 126, 34, 0.1);
+            }
+            50% {
+                border-color: rgba(230, 126, 34, 0.6);
+                box-shadow: 0 0 20px rgba(230, 126, 34, 0.3);
+            }
+        }
+        
+        .dropdown-toggle::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .dropdown-toggle:hover::after {
+            left: 100%;
+        }
+        
+        .dropdown-toggle:hover {
+            background: linear-gradient(135deg, rgba(230, 126, 34, 0.2), rgba(230, 126, 34, 0.3)) !important;
+            box-shadow: 0 8px 25px rgba(230, 126, 34, 0.4) !important;
+            transform: translateY(-3px) scale(1.02) !important;
+            border-color: rgba(230, 126, 34, 0.8) !important;
+        }
+        
+        .dropdown-toggle[aria-expanded="true"] {
+            background: linear-gradient(135deg, rgba(230, 126, 34, 0.3), rgba(230, 126, 34, 0.4)) !important;
+            box-shadow: 0 8px 25px rgba(230, 126, 34, 0.5) !important;
+            transform: translateY(-3px) scale(1.02) !important;
+            border-color: rgba(230, 126, 34, 1) !important;
         }
         
         .user-points {
-            background: var(--btn-bg-primary);
+            background: linear-gradient(135deg, var(--btn-bg-primary), rgba(230, 126, 34, 0.8));
             color: var(--btn-text-white);
             font-weight: bold;
-            padding: 4px 12px;
-            border-radius: 20px;
+            padding: 6px 14px;
+            border-radius: 25px;
             font-size: 0.8rem;
-            margin-left: 8px;
+            margin-left: 10px;
             border: 2px solid var(--btn-border-orange);
             backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
+            animation: pointsPulse 2s infinite;
+            transition: all 0.3s ease;
+        }
+        
+        @keyframes pointsPulse {
+            0%, 100% {
+                box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
+            }
+            50% {
+                box-shadow: 0 6px 25px rgba(230, 126, 34, 0.5);
+            }
+        }
+        
+        .dropdown-toggle:hover .user-points {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(230, 126, 34, 0.4);
         }
 
         .card {
@@ -720,6 +841,10 @@
                             <li><a class="dropdown-item" href="{{ route('profile.posts') }}"><i class="fas fa-share-alt me-2"></i> Mes partages</a></li>
                             <li><a class="dropdown-item" href="{{ route('profile.points') }}"><i class="fas fa-star me-2"></i> Mes points</a></li>
                             <li><a class="dropdown-item" href="{{ route('profile.badges') }}"><i class="fas fa-award me-2"></i> Mes badges</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{{ route('leaderboard.global') }}"><i class="fas fa-list-ol me-2"></i> Classement global</a></li>
+                            <li><a class="dropdown-item" href="{{ route('leagues.index') }}"><i class="fas fa-trophy me-2"></i> Mes ligues</a></li>
+                            <li><a class="dropdown-item" href="{{ route('social.feed') }}"><i class="fas fa-stream me-2"></i> Feed social</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form action="{{ route('logout') }}" method="POST">
