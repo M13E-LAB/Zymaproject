@@ -48,6 +48,8 @@
             border-bottom: 2px solid var(--btn-border-orange);
             backdrop-filter: blur(10px);
             box-shadow: 0 4px 16px rgba(230, 126, 34, 0.15);
+            position: relative;
+            z-index: 10000 !important;
         }
 
         .navbar-brand {
@@ -119,6 +121,11 @@
             border: 2px solid var(--btn-border-orange);
         }
         
+        .dropdown {
+            position: relative;
+            z-index: 10001 !important;
+        }
+        
         .dropdown-menu {
             background: rgba(15, 15, 15, 0.98) !important;
             border: 3px solid var(--btn-border-orange) !important;
@@ -132,6 +139,7 @@
             animation: dropdownSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
             min-width: 250px;
             padding: 0.5rem 0;
+            z-index: 99999 !important;
         }
         
         @keyframes dropdownSlideIn {
