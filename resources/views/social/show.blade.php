@@ -112,10 +112,37 @@
                             </button>
                         </form>
                         
-                        <button type="button" class="btn btn-outline-light" onclick="document.getElementById('comment-form').scrollIntoView();">
+                        <button type="button" class="btn btn-outline-light me-3" onclick="document.getElementById('comment-form').scrollIntoView();">
                             <i class="far fa-comment me-1"></i>
                             <span>{{ $post->comments_count }}</span> Commenter
                         </button>
+                        
+                        @if($post->user_id === auth()->id())
+                            <!-- Boutons de gestion pour le propriétaire -->
+                            <div class="dropdown">
+                                <button class="btn btn-outline-light dropdown-toggle" type="button" id="postActions" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="postActions">
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('social.edit', $post) }}">
+                                            <i class="fas fa-edit me-2"></i> Modifier
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form action="{{ route('social.destroy', $post) }}" method="POST" 
+                                              onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette publication ?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="dropdown-item text-danger">
+                                                <i class="fas fa-trash me-2"></i> Supprimer
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -372,9 +399,9 @@
 }
 
 .score-circle.total {
-    background: rgba(230, 126, 34, 0.1);
-    border-color: #E67E22;
-    color: #E67E22;
+    background: rgba(52, 152, 219, 0.1);
+    border-color: #3498DB;
+    color: #3498DB;
     font-size: 1.5rem;
     width: 90px;
     height: 90px;
@@ -405,7 +432,7 @@
 }
 
 .form-range::-webkit-slider-thumb {
-    background: #E67E22;
+    background: #3498DB;
     border: none;
     border-radius: 50%;
     width: 20px;
@@ -421,7 +448,7 @@
 }
 
 .form-range::-moz-range-thumb {
-    background: #E67E22;
+    background: #3498DB;
     border: none;
     border-radius: 50%;
     width: 20px;
@@ -462,7 +489,7 @@
 }
 
 .analysis-card h6 {
-    color: #E67E22;
+    color: #3498DB;
     margin-bottom: 0.8rem;
 }
 
@@ -492,7 +519,7 @@
 
 .nutrition-value {
     font-weight: bold;
-    color: #E67E22;
+    color: #3498DB;
 }
 
 .improvement-suggestions {

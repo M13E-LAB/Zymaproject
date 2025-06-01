@@ -54,6 +54,12 @@
                             </button>
                         </div>
                     </form>
+                    <div class="text-center mt-3">
+                        <button id="start-barcode-scanner" class="btn-outline">
+                            <i class="fas fa-barcode"></i> Scanner un code-barres
+                        </button>
+                    </div>
+                    <div id="barcode-scanner" style="display:none; margin-top:1rem;"></div>
                 </div>
 
                 <div class="search-box hidden" id="name-search">
@@ -98,21 +104,6 @@
                     </div>
                 </div>
             </div>
-            
-            <div class="recent-uploads">
-                <h4 class="upload-title">Photos récentes de la communauté</h4>
-                <div class="recent-photos">
-                    <div class="recent-photo-item">
-                        <div class="photo-time">il y a 5 min</div>
-                    </div>
-                    <div class="recent-photo-item">
-                        <div class="photo-time">il y a 12 min</div>
-                    </div>
-                    <div class="recent-photo-item">
-                        <div class="photo-time">il y a 23 min</div>
-                    </div>
-                </div>
-            </div>
         </div>
         
         <!-- Animations et éléments graphiques -->
@@ -154,10 +145,10 @@
     --text-primary: #ffffff;
     --text-secondary: rgba(255, 255, 255, 0.7);
     --text-muted: rgba(255, 255, 255, 0.5);
-    --accent-primary: #E67E22;
+    --accent-primary: #3498DB;
     --accent-secondary: #4CAF50;
     --accent-tertiary: #3498db;
-    --gradient-primary: linear-gradient(135deg, #E67E22, #F39C12);
+    --gradient-primary: linear-gradient(135deg, #3498DB, #5DADE2);
     --gradient-secondary: linear-gradient(135deg, #4CAF50, #8BC34A);
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -199,7 +190,7 @@ body, html {
     background: rgba(15, 15, 15, 0.95) !important;
     border-bottom: 2px solid var(--accent-primary);
     backdrop-filter: blur(10px);
-    box-shadow: 0 4px 16px rgba(230, 126, 34, 0.15);
+    box-shadow: 0 4px 16px rgba(52, 152, 219, 0.15);
 }
 
 .logo-container {
@@ -260,7 +251,7 @@ body, html {
     border-color: var(--accent-primary) !important;
     color: var(--text-primary) !important;
     transform: translateY(-2px) !important;
-    box-shadow: 0 4px 16px rgba(230, 126, 34, 0.15) !important;
+    box-shadow: 0 4px 16px rgba(52, 152, 219, 0.15) !important;
 }
 
 .btn-connexion {
@@ -276,14 +267,14 @@ body, html {
     align-items: center !important;
     justify-content: center !important;
     backdrop-filter: blur(10px) !important;
-    box-shadow: 0 4px 16px rgba(230, 126, 34, 0.15) !important;
+    box-shadow: 0 4px 16px rgba(52, 152, 219, 0.15) !important;
 }
 
 .btn-connexion:hover {
     background: rgba(25, 25, 25, 0.98) !important;
     color: var(--accent-primary) !important;
     transform: translateY(-2px) !important;
-    box-shadow: 0 8px 32px rgba(230, 126, 34, 0.25) !important;
+    box-shadow: 0 8px 32px rgba(52, 152, 219, 0.25) !important;
 }
 
 /* Section héro */
@@ -357,7 +348,7 @@ body, html {
 }
 
 .search-tab.active {
-    background: rgba(230, 126, 34, 0.2);
+    background: rgba(52, 152, 219, 0.2);
     color: var(--accent-primary);
 }
 
@@ -408,7 +399,7 @@ body, html {
 
 .btn-primary {
     background: rgba(15, 15, 15, 0.95) !important;
-    border: 2px solid #E67E22 !important;
+    border: 2px solid #3498DB !important;
     color: #ffffff !important;
     font-weight: 600 !important;
     padding: 14px 28px !important;
@@ -423,15 +414,15 @@ body, html {
     gap: 8px !important;
     min-height: 48px !important;
     backdrop-filter: blur(10px) !important;
-    box-shadow: 0 4px 16px rgba(230, 126, 34, 0.15) !important;
+    box-shadow: 0 4px 16px rgba(52, 152, 219, 0.15) !important;
 }
 
 .btn-primary:hover {
     background: rgba(25, 25, 25, 0.98) !important;
-    border-color: #F39C12 !important;
+    border-color: #5DADE2 !important;
     color: #ffffff !important;
     transform: translateY(-3px) scale(1.02) !important;
-    box-shadow: 0 8px 32px rgba(230, 126, 34, 0.25) !important;
+    box-shadow: 0 8px 32px rgba(52, 152, 219, 0.25) !important;
 }
 
 .btn-outline {
@@ -452,10 +443,10 @@ body, html {
 
 .btn-outline:hover {
     background: rgba(15, 15, 15, 0.95) !important;
-    border-color: #E67E22 !important;
+    border-color: #3498DB !important;
     color: #ffffff !important;
     transform: translateY(-2px) !important;
-    box-shadow: 0 4px 16px rgba(230, 126, 34, 0.15) !important;
+    box-shadow: 0 4px 16px rgba(52, 152, 219, 0.15) !important;
 }
 
 .camera-preview {
@@ -497,62 +488,6 @@ body, html {
     margin-bottom: 1rem;
 }
 
-/* Style pour les photos récentes */
-.recent-uploads {
-    margin-top: 2.5rem;
-    text-align: left;
-    width: 100%;
-    animation: fadeInUp 1s ease-out 0.6s both;
-}
-
-.upload-title {
-    color: var(--text-secondary);
-    font-size: 1rem;
-    margin-bottom: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: 600;
-}
-
-.recent-photos {
-    display: flex;
-    gap: 1rem;
-    overflow-x: auto;
-    padding: 0.5rem 0;
-    scrollbar-width: none;
-}
-
-.recent-photos::-webkit-scrollbar {
-    display: none;
-}
-
-.recent-photo-item {
-    min-width: 120px;
-    height: 120px;
-    border-radius: var(--radius-md);
-    background: linear-gradient(45deg, rgba(211, 84, 0, 0.15), rgba(230, 126, 34, 0.15));
-    position: relative;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: var(--transition-smooth);
-}
-
-.recent-photo-item:hover {
-    transform: translateY(-5px);
-    border-color: rgba(230, 126, 34, 0.3);
-}
-
-.photo-time {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 0.5rem;
-    font-size: 0.7rem;
-    background: rgba(0, 0, 0, 0.5);
-    color: var(--text-secondary);
-}
-
 /* Autocomplétion pour la recherche par nom */
 .name-autocomplete {
     position: absolute;
@@ -578,7 +513,7 @@ body, html {
 }
 
 .autocomplete-item:hover {
-    background: rgba(230, 126, 34, 0.1);
+    background: rgba(52, 152, 219, 0.1);
 }
 
 .autocomplete-item:last-child {
@@ -678,12 +613,12 @@ body, html {
 .price-bubble {
     position: absolute;
     border-radius: 50%;
-    background: rgba(230, 126, 34, 0.2);
+    background: rgba(52, 152, 219, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 700;
-    border: 1px solid rgba(230, 126, 34, 0.4);
+    border: 1px solid rgba(52, 152, 219, 0.4);
     animation: float 8s ease-in-out infinite;
 }
 
@@ -713,6 +648,7 @@ body, html {
 }
 </style>
 
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Changer d'onglet de recherche
@@ -851,6 +787,83 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!productNameInput.contains(event.target) && !nameAutocomplete.contains(event.target)) {
                 nameAutocomplete.style.display = 'none';
             }
+        });
+    }
+
+    const startBarcodeScannerBtn = document.getElementById('start-barcode-scanner');
+    const barcodeScannerDiv = document.getElementById('barcode-scanner');
+    let html5QrCode;
+    if (startBarcodeScannerBtn) {
+        startBarcodeScannerBtn.addEventListener('click', function() {
+            startBarcodeScannerBtn.style.display = 'none';
+            barcodeScannerDiv.style.display = 'block';
+            if (!html5QrCode) {
+                html5QrCode = new Html5Qrcode('barcode-scanner');
+            }
+            Html5Qrcode.getCameras().then(cameras => {
+                const cameraId = cameras && cameras.length ? cameras[0].id : null;
+                html5QrCode.start(
+                    cameraId,
+                    { fps: 10, qrbox: 250 },
+                    (decodedText, decodedResult) => {
+                        console.log('Code détecté:', decodedText);
+                        
+                        // Valider que c'est bien un code-barres numérique (8, 12, 13 ou 14 chiffres)
+                        const cleanCode = decodedText.trim();
+                        const isValidBarcode = /^\d{8,14}$/.test(cleanCode);
+                        
+                        if (!isValidBarcode) {
+                            console.log('Code invalide:', cleanCode);
+                            // Ne pas arrêter le scanner, continuer à chercher
+                            return;
+                        }
+                        
+                        // Arrêter le scanner seulement si on a un code valide
+                        html5QrCode.stop();
+                        console.log('Code-barres valide détecté:', cleanCode);
+                        
+                        // Vérifier le token CSRF
+                        const csrfToken = document.querySelector('meta[name="csrf-token"]');
+                        if (!csrfToken) {
+                            console.error('Token CSRF non trouvé');
+                            return;
+                        }
+                        
+                        console.log('Token CSRF trouvé');
+                        
+                        // Créer un formulaire et le soumettre vers /fetch
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = '/fetch';
+                        form.style.display = 'none';
+                        
+                        // Ajouter le token CSRF
+                        const csrfInput = document.createElement('input');
+                        csrfInput.type = 'hidden';
+                        csrfInput.name = '_token';
+                        csrfInput.value = csrfToken.getAttribute('content');
+                        form.appendChild(csrfInput);
+                        
+                        // Ajouter le code produit
+                        const productCodeInput = document.createElement('input');
+                        productCodeInput.type = 'hidden';
+                        productCodeInput.name = 'product_code';
+                        productCodeInput.value = cleanCode;
+                        form.appendChild(productCodeInput);
+                        
+                        console.log('Soumission du formulaire avec code:', cleanCode);
+                        
+                        // Ajouter au DOM et soumettre
+                        document.body.appendChild(form);
+                        form.submit();
+                    },
+                    (errorMessage) => {
+                        // Ignorer les erreurs de scan
+                    }
+                ).catch(err => {
+                    alert('Erreur lors de l\'accès à la caméra : ' + err);
+                });
+            });
         });
     }
 });

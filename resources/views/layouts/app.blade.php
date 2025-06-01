@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>ZYMA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
@@ -25,13 +26,13 @@
             --purple-dark: #7253F6;
             --purple-gradient: linear-gradient(135deg, var(--purple-light), var(--purple-dark));
             --btn-bg-primary: rgba(15, 15, 15, 0.95);
-            --btn-border-orange: #E67E22;
+            --btn-border-blue: #3498DB;
             --btn-text-white: #ffffff;
             --btn-radius: 50px;
             --btn-padding: 14px 28px;
             --btn-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --btn-shadow: 0 4px 16px rgba(230, 126, 34, 0.15);
-            --btn-shadow-hover: 0 8px 32px rgba(230, 126, 34, 0.25);
+            --btn-shadow: 0 4px 16px rgba(52, 152, 219, 0.15);
+            --btn-shadow-hover: 0 8px 32px rgba(52, 152, 219, 0.25);
         }
 
         body {
@@ -45,9 +46,9 @@
         .navbar {
             background: rgba(15, 15, 15, 0.95) !important;
             padding: 1.2rem 0;
-            border-bottom: 2px solid var(--btn-border-orange);
+            border-bottom: 2px solid var(--btn-border-blue);
             backdrop-filter: blur(10px);
-            box-shadow: 0 4px 16px rgba(230, 126, 34, 0.15);
+            box-shadow: 0 4px 16px rgba(52, 152, 219, 0.15);
             position: relative;
             z-index: 10000 !important;
         }
@@ -61,7 +62,7 @@
         }
 
         .navbar-brand:hover {
-            color: var(--btn-border-orange) !important;
+            color: var(--btn-border-blue) !important;
             transform: scale(1.05);
         }
 
@@ -103,7 +104,7 @@
 
         .nav-link:hover {
             background: var(--btn-bg-primary) !important;
-            border-color: var(--btn-border-orange) !important;
+            border-color: var(--btn-border-blue) !important;
             color: var(--btn-text-white) !important;
             transform: translateY(-2px) !important;
             box-shadow: var(--btn-shadow) !important;
@@ -118,7 +119,7 @@
             height: 32px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid var(--btn-border-orange);
+            border: 2px solid var(--btn-border-blue);
         }
         
         .dropdown {
@@ -128,12 +129,12 @@
         
         .dropdown-menu {
             background: rgba(15, 15, 15, 0.98) !important;
-            border: 3px solid var(--btn-border-orange) !important;
+            border: 3px solid var(--btn-border-blue) !important;
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 20px 60px rgba(230, 126, 34, 0.4), 
+            box-shadow: 0 20px 60px rgba(52, 152, 219, 0.4), 
                         0 8px 32px rgba(0, 0, 0, 0.8),
-                        inset 0 0 0 1px rgba(230, 126, 34, 0.1);
+                        inset 0 0 0 1px rgba(52, 152, 219, 0.1);
             backdrop-filter: blur(20px);
             transform: translateY(-10px);
             animation: dropdownSlideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
@@ -172,16 +173,16 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(230, 126, 34, 0.1), transparent);
+            background: linear-gradient(90deg, transparent, rgba(52, 152, 219, 0.1), transparent);
             transition: left 0.5s ease;
         }
         
         .dropdown-item:hover {
-            background: linear-gradient(135deg, rgba(230, 126, 34, 0.2), rgba(230, 126, 34, 0.1)) !important;
-            color: var(--btn-border-orange) !important;
-            border-left-color: var(--btn-border-orange);
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.2), rgba(52, 152, 219, 0.1)) !important;
+            color: var(--btn-border-blue) !important;
+            border-left-color: var(--btn-border-blue);
             transform: translateX(8px);
-            box-shadow: inset 0 0 20px rgba(230, 126, 34, 0.1);
+            box-shadow: inset 0 0 20px rgba(52, 152, 219, 0.1);
         }
         
         .dropdown-item:hover::before {
@@ -189,7 +190,7 @@
         }
         
         .dropdown-item i {
-            color: var(--btn-border-orange);
+            color: var(--btn-border-blue);
             font-size: 1.1rem;
             width: 20px;
             text-align: center;
@@ -201,7 +202,7 @@
         }
         
         .dropdown-divider {
-            border-color: var(--btn-border-orange);
+            border-color: var(--btn-border-blue);
             opacity: 0.5;
             margin: 0.5rem 1rem;
             border-width: 1px;
@@ -212,20 +213,20 @@
             position: relative;
             overflow: hidden;
             transition: all 0.3s ease !important;
-            background: linear-gradient(135deg, rgba(230, 126, 34, 0.05), rgba(230, 126, 34, 0.1)) !important;
-            border: 2px solid rgba(230, 126, 34, 0.3) !important;
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.05), rgba(52, 152, 219, 0.1)) !important;
+            border: 2px solid rgba(52, 152, 219, 0.3) !important;
             border-radius: 25px !important;
             animation: userButtonGlow 3s ease-in-out infinite !important;
         }
         
         @keyframes userButtonGlow {
             0%, 100% {
-                border-color: rgba(230, 126, 34, 0.3);
-                box-shadow: 0 0 10px rgba(230, 126, 34, 0.1);
+                border-color: rgba(52, 152, 219, 0.3);
+                box-shadow: 0 0 10px rgba(52, 152, 219, 0.1);
             }
             50% {
-                border-color: rgba(230, 126, 34, 0.6);
-                box-shadow: 0 0 20px rgba(230, 126, 34, 0.3);
+                border-color: rgba(52, 152, 219, 0.6);
+                box-shadow: 0 0 20px rgba(52, 152, 219, 0.3);
             }
         }
         
@@ -245,46 +246,46 @@
         }
         
         .dropdown-toggle:hover {
-            background: linear-gradient(135deg, rgba(230, 126, 34, 0.2), rgba(230, 126, 34, 0.3)) !important;
-            box-shadow: 0 8px 25px rgba(230, 126, 34, 0.4) !important;
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.2), rgba(52, 152, 219, 0.3)) !important;
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.4) !important;
             transform: translateY(-3px) scale(1.02) !important;
-            border-color: rgba(230, 126, 34, 0.8) !important;
+            border-color: rgba(52, 152, 219, 0.8) !important;
         }
         
         .dropdown-toggle[aria-expanded="true"] {
-            background: linear-gradient(135deg, rgba(230, 126, 34, 0.3), rgba(230, 126, 34, 0.4)) !important;
-            box-shadow: 0 8px 25px rgba(230, 126, 34, 0.5) !important;
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.3), rgba(52, 152, 219, 0.4)) !important;
+            box-shadow: 0 8px 25px rgba(52, 152, 219, 0.5) !important;
             transform: translateY(-3px) scale(1.02) !important;
-            border-color: rgba(230, 126, 34, 1) !important;
+            border-color: rgba(52, 152, 219, 1) !important;
         }
         
         .user-points {
-            background: linear-gradient(135deg, var(--btn-bg-primary), rgba(230, 126, 34, 0.8));
+            background: linear-gradient(135deg, var(--btn-bg-primary), rgba(52, 152, 219, 0.8));
             color: var(--btn-text-white);
             font-weight: bold;
             padding: 6px 14px;
             border-radius: 25px;
             font-size: 0.8rem;
             margin-left: 10px;
-            border: 2px solid var(--btn-border-orange);
+            border: 2px solid var(--btn-border-blue);
             backdrop-filter: blur(10px);
-            box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
             animation: pointsPulse 2s infinite;
             transition: all 0.3s ease;
         }
         
         @keyframes pointsPulse {
             0%, 100% {
-                box-shadow: 0 4px 15px rgba(230, 126, 34, 0.3);
+                box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
             }
             50% {
-                box-shadow: 0 6px 25px rgba(230, 126, 34, 0.5);
+                box-shadow: 0 6px 25px rgba(52, 152, 219, 0.5);
             }
         }
         
         .dropdown-toggle:hover .user-points {
             transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(230, 126, 34, 0.4);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
         }
 
         .card {
@@ -534,7 +535,7 @@
         
         .search-product-input:focus {
             background: var(--btn-bg-primary) !important;
-            border-color: var(--btn-border-orange) !important;
+            border-color: var(--btn-border-blue) !important;
             width: 300px !important;
             outline: none !important;
             box-shadow: var(--btn-shadow) !important;
@@ -550,7 +551,7 @@
             left: 0.8rem;
             top: 50%;
             transform: translateY(-50%);
-            color: var(--btn-border-orange);
+            color: var(--btn-border-blue);
             pointer-events: none;
             font-size: 1.1rem;
         }
@@ -562,9 +563,9 @@
             right: 0;
             margin-top: 0.5rem;
             background: rgba(15, 15, 15, 0.95);
-            border: 2px solid var(--btn-border-orange);
+            border: 2px solid var(--btn-border-blue);
             border-radius: 12px;
-            box-shadow: 0 8px 32px rgba(230, 126, 34, 0.3);
+            box-shadow: 0 8px 32px rgba(52, 152, 219, 0.3);
             z-index: 1000;
             max-height: 300px;
             overflow-y: auto;
@@ -575,14 +576,14 @@
         .autocomplete-item {
             padding: 0.8rem 1rem;
             cursor: pointer;
-            border-bottom: 1px solid rgba(230, 126, 34, 0.2);
+            border-bottom: 1px solid rgba(52, 152, 219, 0.2);
             color: var(--btn-text-white);
             transition: var(--btn-transition);
         }
         
         .autocomplete-item:hover {
-            background: rgba(230, 126, 34, 0.15);
-            color: var(--btn-border-orange);
+            background: rgba(52, 152, 219, 0.15);
+            color: var(--btn-border-blue);
         }
         
         .autocomplete-item:last-child {
@@ -598,7 +599,7 @@
         .search-tab,
         .btn-purple {
             background: var(--btn-bg-primary) !important;
-            border: 2px solid var(--btn-border-orange) !important;
+            border: 2px solid var(--btn-border-blue) !important;
             color: var(--btn-text-white) !important;
             font-weight: 600 !important;
             padding: var(--btn-padding) !important;
@@ -628,7 +629,7 @@
         .search-tab:hover,
         .btn-purple:hover {
             background: rgba(25, 25, 25, 0.98) !important;
-            border-color: #F39C12 !important;
+            border-color: #3498DB !important;
             color: var(--btn-text-white) !important;
             transform: translateY(-3px) scale(1.02) !important;
             box-shadow: var(--btn-shadow-hover) !important;
@@ -638,10 +639,10 @@
         .btn-primary.active,
         .search-tab.active,
         .btn-filter.active {
-            background: rgba(230, 126, 34, 0.15) !important;
-            border-color: #E67E22 !important;
-            color: #E67E22 !important;
-            box-shadow: inset 0 2px 8px rgba(230, 126, 34, 0.2) !important;
+            background: rgba(52, 152, 219, 0.15) !important;
+            border-color: #3498DB !important;
+            color: #3498DB !important;
+            box-shadow: inset 0 2px 8px rgba(52, 152, 219, 0.2) !important;
         }
 
         /* Boutons secondaires */
@@ -672,7 +673,7 @@
         .btn-outline-secondary:hover,
         .btn-back:hover {
             background: var(--btn-bg-primary) !important;
-            border-color: var(--btn-border-orange) !important;
+            border-color: var(--btn-border-blue) !important;
             color: var(--btn-text-white) !important;
             transform: translateY(-2px) !important;
             box-shadow: var(--btn-shadow) !important;
@@ -683,7 +684,7 @@
             width: 48px !important;
             height: 48px !important;
             background: var(--btn-bg-primary) !important;
-            border: 1px solid var(--btn-border-orange) !important;
+            border: 1px solid var(--btn-border-blue) !important;
             color: var(--btn-text-white) !important;
             border-radius: 50% !important;
             display: flex !important;
@@ -694,10 +695,10 @@
         }
 
         .btn-icon:hover {
-            background: rgba(230, 126, 34, 0.2) !important;
-            border-color: #F39C12 !important;
+            background: rgba(52, 152, 219, 0.2) !important;
+            border-color: #3498DB !important;
             transform: translateY(-2px) scale(1.1) !important;
-            box-shadow: 0 6px 20px rgba(230, 126, 34, 0.3) !important;
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3) !important;
         }
 
         /* Boutons de filtre */
@@ -712,15 +713,15 @@
         }
 
         .btn-filter:hover {
-            background: rgba(230, 126, 34, 0.1) !important;
-            border-color: var(--btn-border-orange) !important;
-            color: var(--btn-border-orange) !important;
+            background: rgba(52, 152, 219, 0.1) !important;
+            border-color: var(--btn-border-blue) !important;
+            color: var(--btn-border-blue) !important;
         }
 
         /* Boutons de connexion/inscription */
         .btn-connexion {
             background: var(--btn-bg-primary) !important;
-            border: 2px solid var(--btn-border-orange) !important;
+            border: 2px solid var(--btn-border-blue) !important;
             color: var(--btn-text-white) !important;
             padding: 12px 24px !important;
             border-radius: var(--btn-radius) !important;
@@ -734,8 +735,8 @@
         }
 
         .btn-connexion:hover {
-            background: rgba(230, 126, 34, 0.15) !important;
-            color: var(--btn-border-orange) !important;
+            background: rgba(52, 152, 219, 0.15) !important;
+            color: var(--btn-border-blue) !important;
             transform: translateY(-2px) !important;
             box-shadow: var(--btn-shadow) !important;
         }
@@ -759,7 +760,7 @@
 
         .btn-outline:hover {
             background: var(--btn-bg-primary) !important;
-            border-color: var(--btn-border-orange) !important;
+            border-color: var(--btn-border-blue) !important;
             color: var(--btn-text-white) !important;
             transform: translateY(-2px) !important;
             box-shadow: var(--btn-shadow) !important;
@@ -767,9 +768,9 @@
 
         /* Animations pour tous les boutons */
         @keyframes buttonPulse {
-            0% { box-shadow: 0 0 0 0 rgba(230, 126, 34, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(230, 126, 34, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(230, 126, 34, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(52, 152, 219, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(52, 152, 219, 0); }
         }
 
         /* Focus states pour accessibilité */
@@ -778,7 +779,7 @@
         button:focus,
         .btn-secondary:focus {
             outline: none !important;
-            box-shadow: 0 0 0 3px rgba(230, 126, 34, 0.3) !important;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3) !important;
             animation: buttonPulse 1.5s infinite !important;
         }
 

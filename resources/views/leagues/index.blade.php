@@ -13,9 +13,6 @@
                     <a href="{{ route('leagues.create') }}" class="btn btn-primary">
                         <i class="fas fa-plus-circle me-2"></i> Créer une nouvelle ligue
                     </a>
-                    <a href="{{ route('leagues.meal.upload') }}" class="btn btn-secondary ms-2">
-                        <i class="fas fa-camera me-2"></i> Partager mon repas
-                    </a>
                 </div>
                 
                 <div>
@@ -95,8 +92,11 @@
                                 </div>
                             </div>
                             
-                            <a href="{{ route('leagues.show', $league->slug) }}" class="btn btn-outline-light w-100">
+                            <a href="{{ route('leagues.show', $league->slug) }}" class="btn btn-outline-light w-100 mb-2">
                                 Voir le classement
+                            </a>
+                            <a href="{{ route('leagues.meal.upload', $league->slug) }}" class="btn btn-primary w-100">
+                                <i class="fas fa-camera me-2"></i> Partager un repas dans cette ligue
                             </a>
                         </div>
                     </div>
@@ -185,7 +185,7 @@
                 @else
                     <div class="empty-meals-state">
                         <div class="text-center p-5">
-                            <i class="fas fa-camera-retro mb-3" style="font-size: 3rem; color: #E67E22;"></i>
+                            <i class="fas fa-camera-retro mb-3" style="font-size: 3rem; color: #3498DB;"></i>
                             <h5>Aucun repas partagé</h5>
                             <p class="text-muted mb-4">Commencez à partager vos repas pour gagner des points dans vos ligues !</p>
                             <a href="{{ route('leagues.meal.upload') }}" class="btn btn-primary">
@@ -228,7 +228,7 @@
     border-radius: 20px;
     font-size: 0.8rem;
     font-weight: bold;
-    border: 2px solid #E67E22;
+    border: 2px solid #3498DB;
 }
 
 .meal-score-badge.pending {

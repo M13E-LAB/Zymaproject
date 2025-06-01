@@ -112,6 +112,111 @@ class SocialFeedController extends Controller
     }
 
     /**
+     * Show the form for editing the specified post.
+     */
+    public function edit(Post $post)
+    {
+        // Vérifier que l'utilisateur est le propriétaire du post
+        if ($post->user_id !== Auth::id()) {
+            return redirect()->route('social.feed')
+                ->with('error', 'Vous ne pouvez pas modifier cette publication.');
+        }
+        
+        return view('social.edit', compact('post'));
+    }
+
+    /**
+     * Update the specified post.
+     */
+    public function update(Request $request, Post $post)
+    {
+        // Vérifier que l'utilisateur est le propriétaire du post
+        if ($post->user_id !== Auth::id()) {
+            return redirect()->route('social.feed')
+                ->with('error', 'Vous ne pouvez pas modifier cette publication.');
+        }
+        
+        $request->validate([
+            'product_name' => 'required|string|max:255',
+            'store_name' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'regular_price' => 'nullable|numeric|min:0',
+            'description' => 'nullable|string|max:1000',
+            'post_type' => 'required|in:price,deal,meal,review',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120', // Max 5MB
+        ]);
+        
+        $post->product_name = $request->product_name;
+        $post->store_name = $request->store_name;
+        $post->price = $request->price;
+        $post->regular_price = $request->regular_price;
+        $post->description = $request->description;
+        $post->post_type = $request->post_type;
+        
+        // Traitement de l'image si une nouvelle est uploadée
+        if ($request->hasFile('image')) {
+            // Supprimer l'ancienne image
+            if ($post->image && file_exists(public_path($post->image))) {
+                unlink(public_path($post->image));
+            }
+            
+            $image = $request->file('image');
+            $filename = time() . '_' . uniqid() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('uploads/posts'), $filename);
+            $post->image = '/uploads/posts/' . $filename;
+        }
+        
+        // Date d'expiration pour les offres
+        if ($request->post_type === 'deal' && $request->has('expires_at')) {
+            $post->expires_at = $request->expires_at;
+        }
+        
+        $post->save();
+        
+        // Re-analyser le repas si c'est un meal et qu'il y a eu des changements
+        if ($post->post_type === 'meal') {
+            // Supprimer l'ancien score pour re-analyser
+            if ($post->mealScore) {
+                $post->mealScore->delete();
+            }
+            
+            $mealScoreController = new \App\Http\Controllers\MealScoreController();
+            $mealScoreController->autoAnalyzeMeal($post);
+        }
+        
+        return redirect()->route('social.show', $post)
+            ->with('success', 'Publication mise à jour avec succès !');
+    }
+
+    /**
+     * Remove the specified post from storage.
+     */
+    public function destroy(Post $post)
+    {
+        // Vérifier que l'utilisateur est le propriétaire du post
+        if ($post->user_id !== Auth::id()) {
+            return redirect()->route('social.feed')
+                ->with('error', 'Vous ne pouvez pas supprimer cette publication.');
+        }
+        
+        // Supprimer l'image associée
+        if ($post->image && file_exists(public_path($post->image))) {
+            unlink(public_path($post->image));
+        }
+        
+        // Supprimer le score de repas s'il existe
+        if ($post->mealScore) {
+            $post->mealScore->delete();
+        }
+        
+        // Supprimer la publication
+        $post->delete();
+        
+        return redirect()->route('social.feed')
+            ->with('success', 'Publication supprimée avec succès.');
+    }
+
+    /**
      * Like or unlike a post.
      */
     public function like(Post $post)

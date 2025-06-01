@@ -121,6 +121,33 @@
                                         <i class="far fa-comment"></i>
                                         <span>{{ $post->comments_count }}</span>
                                     </a>
+                                    
+                                    @if($post->user_id === auth()->id())
+                                        <!-- Boutons pour le propriétaire du post -->
+                                        <div class="dropdown d-inline ms-2">
+                                            <button class="btn btn-action dropdown-toggle" type="button" id="postMenu{{ $post->id }}" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="postMenu{{ $post->id }}">
+                                                <li>
+                                                    <a class="dropdown-item" href="{{ route('social.edit', $post) }}">
+                                                        <i class="fas fa-edit me-2"></i> Modifier
+                                                    </a>
+                                                </li>
+                                                <li><hr class="dropdown-divider"></li>
+                                                <li>
+                                                    <form action="{{ route('social.destroy', $post) }}" method="POST" 
+                                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette publication ?')" class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="dropdown-item text-danger">
+                                                            <i class="fas fa-trash me-2"></i> Supprimer
+                                                        </button>
+                                                    </form>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    @endif
                                 </div>
                                 
                                 <a href="{{ route('social.show', $post) }}" class="btn btn-view">
@@ -198,7 +225,7 @@
 /* Boutons */
 .btn-primary {
     background: rgba(15, 15, 15, 0.95) !important;
-    border: 2px solid #E67E22 !important;
+    border: 2px solid #3498DB !important;
     color: #ffffff !important;
     font-weight: 600 !important;
     padding: 14px 28px !important;
@@ -207,15 +234,15 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
     letter-spacing: 0.3px !important;
     backdrop-filter: blur(10px) !important;
-    box-shadow: 0 4px 16px rgba(230, 126, 34, 0.15) !important;
+    box-shadow: 0 4px 16px rgba(52, 152, 219, 0.15) !important;
 }
 
 .btn-primary:hover {
     background: rgba(25, 25, 25, 0.98) !important;
-    border-color: #F39C12 !important;
+    border-color: #5DADE2 !important;
     color: #ffffff !important;
     transform: translateY(-3px) scale(1.02) !important;
-    box-shadow: 0 8px 32px rgba(230, 126, 34, 0.25) !important;
+    box-shadow: 0 8px 32px rgba(52, 152, 219, 0.25) !important;
 }
 
 /* Filtres */
@@ -240,17 +267,17 @@
 
 .filter-btn:hover {
     background: rgba(15, 15, 15, 0.95) !important;
-    border-color: #E67E22 !important;
+    border-color: #3498DB !important;
     color: #ffffff !important;
     transform: translateY(-2px) !important;
-    box-shadow: 0 4px 16px rgba(230, 126, 34, 0.15) !important;
+    box-shadow: 0 4px 16px rgba(52, 152, 219, 0.15) !important;
 }
 
 .filter-btn.active {
-    background: rgba(230, 126, 34, 0.15) !important;
-    border-color: #E67E22 !important;
-    color: #E67E22 !important;
-    box-shadow: inset 0 2px 8px rgba(230, 126, 34, 0.2) !important;
+    background: rgba(52, 152, 219, 0.15) !important;
+    border-color: #3498DB !important;
+    color: #3498DB !important;
+    box-shadow: inset 0 2px 8px rgba(52, 152, 219, 0.2) !important;
 }
 
 /* Images des posts */
@@ -379,33 +406,66 @@
 }
 
 .btn-action {
-    background: rgba(30, 30, 30, 0.8) !important;
-    border: 2px solid rgba(255, 255, 255, 0.3) !important;
-    color: #ffffff !important;
-    padding: 8px 16px !important;
-    border-radius: 25px !important;
-    font-size: 0.9rem !important;
-    font-weight: 600 !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    backdrop-filter: blur(10px) !important;
-    cursor: pointer !important;
+    background: transparent;
+    border: none;
+    color: #999;
+    padding: 0.5rem;
+    border-radius: 50%;
+    transition: all 0.3s;
+    font-size: 1.1rem;
 }
 
 .btn-action:hover {
-    background: rgba(15, 15, 15, 0.95) !important;
-    border-color: #E67E22 !important;
-    color: #ffffff !important;
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 16px rgba(230, 126, 34, 0.15) !important;
+    color: #fff;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.btn-action.dropdown-toggle::after {
+    display: none;
 }
 
 .btn-action .liked {
-    color: #e74c3c;
+    color: #ff4757;
+}
+
+.dropdown-menu-dark {
+    background-color: #1a1a1a !important;
+    border: 1px solid #333 !important;
+    border-radius: 10px !important;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dropdown-menu-dark .dropdown-item {
+    color: #fff !important;
+    padding: 0.7rem 1rem !important;
+    transition: all 0.3s !important;
+    border-radius: 8px !important;
+    margin: 2px 4px !important;
+}
+
+.dropdown-menu-dark .dropdown-item:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    color: #fff !important;
+    transform: translateX(5px) !important;
+}
+
+.dropdown-menu-dark .dropdown-item.text-danger {
+    color: #ff4757 !important;
+}
+
+.dropdown-menu-dark .dropdown-item.text-danger:hover {
+    background-color: rgba(255, 71, 87, 0.1) !important;
+    color: #ff4757 !important;
+}
+
+.dropdown-menu-dark .dropdown-divider {
+    border-color: #333 !important;
+    margin: 0.5rem 0 !important;
 }
 
 .btn-view {
     background: rgba(15, 15, 15, 0.95) !important;
-    border: 2px solid #E67E22 !important;
+    border: 2px solid #3498DB !important;
     color: #ffffff !important;
     padding: 8px 16px !important;
     border-radius: 25px !important;
@@ -418,10 +478,10 @@
 
 .btn-view:hover {
     background: rgba(25, 25, 25, 0.98) !important;
-    border-color: #F39C12 !important;
+    border-color: #5DADE2 !important;
     color: #ffffff !important;
     transform: translateY(-2px) scale(1.02) !important;
-    box-shadow: 0 4px 16px rgba(230, 126, 34, 0.15) !important;
+    box-shadow: 0 4px 16px rgba(52, 152, 219, 0.15) !important;
 }
 
 /* État vide */
@@ -479,8 +539,8 @@
 
 .page-link:hover {
     color: #fff;
-    background-color: #E67E22;
-    border-color: #E67E22;
+    background-color: #3498DB;
+    border-color: #3498DB;
 }
 
 /* Responsive */

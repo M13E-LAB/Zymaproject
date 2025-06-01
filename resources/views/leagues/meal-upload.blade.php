@@ -14,21 +14,30 @@
             </div>
         </div>
         
+        @if(isset($league))
+            <div class="alert alert-info mb-4">
+                <i class="fas fa-users me-2"></i> Repas partagé dans la ligue <strong>{{ $league->name }}</strong>
+            </div>
+        @endif
+        
         <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card profile-card">
                     <div class="card-body p-4">
                         <form action="{{ route('leagues.meal.store') }}" method="POST" enctype="multipart/form-data">
                             @csrf
+                            @if(isset($league))
+                                <input type="hidden" name="league_id" value="{{ $league->id }}">
+                            @endif
                             
                             <!-- Upload d'image -->
                             <div class="mb-4">
                                 <label for="image" class="form-label">
                                     <i class="fas fa-camera me-2"></i>Photo de votre repas
                                 </label>
-                                <div class="upload-area" id="upload-area">
+                                <div class="upload-zone" id="upload-zone">
                                     <input type="file" class="form-control d-none" id="image" name="image" accept="image/*" required>
-                                    <div class="upload-placeholder" id="upload-placeholder">
+                                    <div class="upload-icon" id="upload-icon">
                                         <i class="fas fa-cloud-upload-alt mb-3"></i>
                                         <h5>Cliquez ou glissez votre photo ici</h5>
                                         <p class="text-muted">JPG, PNG, GIF jusqu'à 5MB</p>
@@ -161,36 +170,31 @@
 
 <style>
 /* Styles pour l'upload de repas */
-.upload-area {
-    border: 2px dashed #E67E22;
-    border-radius: 16px;
-    padding: 2rem;
+.upload-zone {
+    border: 2px dashed #3498DB;
+    border-radius: 12px;
     text-align: center;
-    background: rgba(230, 126, 34, 0.05);
+    padding: 3rem 2rem;
+    background: rgba(52, 152, 219, 0.05);
     transition: all 0.3s ease;
     cursor: pointer;
     position: relative;
-    min-height: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    overflow: hidden;
 }
 
-.upload-area:hover {
-    border-color: #F39C12;
-    background: rgba(230, 126, 34, 0.1);
-    transform: translateY(-2px);
+.upload-zone:hover {
+    border-color: #5DADE2;
+    background: rgba(52, 152, 219, 0.1);
 }
 
-.upload-area.dragover {
-    border-color: #F39C12;
-    background: rgba(230, 126, 34, 0.15);
-    transform: scale(1.02);
+.upload-zone.dragover {
+    border-color: #5DADE2;
+    background: rgba(52, 152, 219, 0.15);
 }
 
-.upload-placeholder i {
+.upload-icon {
     font-size: 3rem;
-    color: #E67E22;
+    color: #3498DB;
     margin-bottom: 1rem;
 }
 
@@ -239,12 +243,12 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-    .upload-area {
+    .upload-zone {
         padding: 1.5rem 1rem;
         min-height: 150px;
     }
     
-    .upload-placeholder i {
+    .upload-icon {
         font-size: 2rem;
     }
 }
@@ -253,30 +257,30 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const imageInput = document.getElementById('image');
-    const uploadArea = document.getElementById('upload-area');
-    const uploadPlaceholder = document.getElementById('upload-placeholder');
+    const uploadZone = document.getElementById('upload-zone');
+    const uploadIcon = document.getElementById('upload-icon');
     const uploadPreview = document.getElementById('upload-preview');
     const previewImage = document.getElementById('preview-image');
     
     // Click to upload
-    uploadArea.addEventListener('click', function() {
+    uploadZone.addEventListener('click', function() {
         imageInput.click();
     });
     
     // Drag and drop
-    uploadArea.addEventListener('dragover', function(e) {
+    uploadZone.addEventListener('dragover', function(e) {
         e.preventDefault();
-        uploadArea.classList.add('dragover');
+        uploadZone.classList.add('dragover');
     });
     
-    uploadArea.addEventListener('dragleave', function(e) {
+    uploadZone.addEventListener('dragleave', function(e) {
         e.preventDefault();
-        uploadArea.classList.remove('dragover');
+        uploadZone.classList.remove('dragover');
     });
     
-    uploadArea.addEventListener('drop', function(e) {
+    uploadZone.addEventListener('drop', function(e) {
         e.preventDefault();
-        uploadArea.classList.remove('dragover');
+        uploadZone.classList.remove('dragover');
         
         const files = e.dataTransfer.files;
         if (files.length > 0 && files[0].type.startsWith('image/')) {
@@ -296,7 +300,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const reader = new FileReader();
         reader.onload = function(e) {
             previewImage.src = e.target.result;
-            uploadPlaceholder.classList.add('d-none');
+            uploadIcon.classList.add('d-none');
             uploadPreview.classList.remove('d-none');
         };
         reader.readAsDataURL(file);
@@ -304,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function changeImage() {
-    document.getElementById('upload-placeholder').classList.remove('d-none');
+    document.getElementById('upload-icon').classList.remove('d-none');
     document.getElementById('upload-preview').classList.add('d-none');
     document.getElementById('image').value = '';
 }

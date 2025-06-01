@@ -251,9 +251,10 @@ class LeagueController extends Controller
     /**
      * Show the meal upload form for league members.
      */
-    public function mealUpload()
+    public function mealUpload($slug)
     {
-        return view('leagues.meal-upload');
+        $league = \App\Models\League::where('slug', $slug)->firstOrFail();
+        return view('leagues.meal-upload', compact('league'));
     }
     
     /**

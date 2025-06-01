@@ -58,6 +58,7 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/leagues/{slug}/members/{userId}', [App\Http\Controllers\LeagueController::class, 'updateMemberRole'])->name('leagues.updateMemberRole');
     Route::delete('/leagues/{slug}/members/{userId}', [App\Http\Controllers\LeagueController::class, 'removeMember'])->name('leagues.removeMember');
     Route::get('/leaderboard', [App\Http\Controllers\LeagueController::class, 'globalLeaderboard'])->name('leaderboard.global');
+    Route::get('/leagues/{slug}/meal-upload', [App\Http\Controllers\LeagueController::class, 'mealUpload'])->name('leagues.meal.upload');
 });
 
 // Routes d'authentification (login, register, password reset, etc.)

@@ -335,7 +335,7 @@
         height: 100px;
         border-radius: 50%;
         object-fit: cover;
-        border: 3px solid #E67E22;
+        border: 3px solid #3498DB;
     }
     
     .profile-avatar-placeholder {
@@ -348,7 +348,7 @@
         justify-content: center;
         color: #666;
         font-size: 2.5rem;
-        border: 3px solid #E67E22;
+        border: 3px solid #3498DB;
     }
     
     .level-badge {
@@ -445,7 +445,7 @@
         width: 150px;
         height: 150px;
         border-radius: 50%;
-        background: linear-gradient(135deg, #E67E22, #F39C12);
+        background: linear-gradient(135deg, #3498DB, #5DADE2);
         display: flex;
         justify-content: center;
         align-items: center;

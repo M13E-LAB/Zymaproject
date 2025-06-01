@@ -30,6 +30,11 @@
             
             <div class="d-flex flex-wrap gap-2">
                 @if($isMember)
+                    <a href="{{ route('leagues.meal.upload', $league->slug) }}" class="btn btn-primary">
+                        <i class="fas fa-camera me-2"></i> Partager un repas
+                    </a>
+                @endif
+                @if($isMember)
                     <form action="{{ route('leagues.leave', $league->slug) }}" method="POST" class="d-inline">
                         @csrf
                         @method('DELETE')
@@ -38,7 +43,6 @@
                         </button>
                     </form>
                 @endif
-                
                 @if($league->created_by === auth()->id())
                     <button type="button" class="btn btn-outline-light" data-bs-toggle="modal" data-bs-target="#inviteModal">
                         <i class="fas fa-user-plus me-2"></i> Inviter des amis
